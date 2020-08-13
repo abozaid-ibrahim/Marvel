@@ -1,10 +1,11 @@
 //
 //  Navigator.swift
-//  MusicPlayer
+//  IMDB
 //
-//  Created by abuzeid on 07.08.20.
+//  Created by abuzeid on 13.08.20.
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
+import UIKit
 
 protocol Navigator {
     func push(_ dest: Destination)
@@ -18,7 +19,7 @@ final class AppNavigator: Navigator {
 
     @discardableResult
     init(window: UIWindow) {
-        AppNavigator.navigationController = UINavigationController(rootViewController: Destination.recipesList.controller)
+        AppNavigator.navigationController = UINavigationController(rootViewController: Destination.albums.controller)
         window.rootViewController = AppNavigator.navigationController
         window.makeKeyAndVisible()
     }
