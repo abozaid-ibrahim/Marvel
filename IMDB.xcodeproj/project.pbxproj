@@ -99,12 +99,7 @@
 		6CC83ACF24E57FEA00DE4EDC /* IMDB */ = {
 			isa = PBXGroup;
 			children = (
-				6CC83AD024E57FEA00DE4EDC /* AppDelegate.swift */,
-				6CC83AD224E57FEA00DE4EDC /* SceneDelegate.swift */,
-				6CC83AD424E57FEA00DE4EDC /* ContentView.swift */,
-				6CC83AD624E57FEB00DE4EDC /* Assets.xcassets */,
-				6CC83ADB24E57FEB00DE4EDC /* LaunchScreen.storyboard */,
-				6CC83ADE24E57FEB00DE4EDC /* Info.plist */,
+				6CC83B0024E5892F00DE4EDC /* SupportingFiles */,
 				6CC83AD824E57FEB00DE4EDC /* Preview Content */,
 			);
 			path = IMDB;
@@ -134,6 +129,19 @@
 				6CC83AF424E57FEB00DE4EDC /* Info.plist */,
 			);
 			path = IMDBUITests;
+			sourceTree = "<group>";
+		};
+		6CC83B0024E5892F00DE4EDC /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				6CC83AD024E57FEA00DE4EDC /* AppDelegate.swift */,
+				6CC83AD224E57FEA00DE4EDC /* SceneDelegate.swift */,
+				6CC83AD424E57FEA00DE4EDC /* ContentView.swift */,
+				6CC83AD624E57FEB00DE4EDC /* Assets.xcassets */,
+				6CC83ADB24E57FEB00DE4EDC /* LaunchScreen.storyboard */,
+				6CC83ADE24E57FEB00DE4EDC /* Info.plist */,
+			);
+			path = SupportingFiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -438,7 +446,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"IMDB/Preview Content\"";
 				DEVELOPMENT_TEAM = 475YN7ANSF;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = IMDB/Info.plist;
+				INFOPLIST_FILE = IMDB/SupportingFiles/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -458,7 +466,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"IMDB/Preview Content\"";
 				DEVELOPMENT_TEAM = 475YN7ANSF;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = IMDB/Info.plist;
+				INFOPLIST_FILE = IMDB/SupportingFiles/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
