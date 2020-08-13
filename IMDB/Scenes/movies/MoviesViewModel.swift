@@ -1,5 +1,5 @@
 //
-//  AlbumsViewModel.swift
+//  MoviesViewModel.swift
 //  IMDB
 //
 //  Created by abuzeid on 13.08.20.
@@ -14,8 +14,8 @@ enum CollectionReload {
     case insertIndexPaths([IndexPath])
 }
 
-protocol AlbumsViewModelType {
-    var dataList: [Session] { get }
+protocol MoviesViewModelType {
+    var dataList: [Movie] { get }
     var error: PublishSubject<String> { get }
     var searchFor: PublishSubject<String> { get }
     var isDataLoading: PublishSubject<Bool> { get }
@@ -26,7 +26,7 @@ protocol AlbumsViewModelType {
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath])
 }
 
-final class AlbumsViewModel: AlbumsViewModelType {
+final class MoviesViewModel: MoviesViewModelType {
     let error = PublishSubject<String>()
     let searchFor = PublishSubject<String>()
     let isDataLoading = PublishSubject<Bool>()
@@ -35,8 +35,8 @@ final class AlbumsViewModel: AlbumsViewModelType {
     private let apiClient: ApiClient
     private var page = Page()
     private var isSearchingMode = false
-    private var sessionsList: [Session] = []
-    private var searchResultList: [Session] = []
+    private var sessionsList: [Movie] = []
+    private var searchResultList: [Movie] = []
 
     private(set) var reloadFields = PublishSubject<CollectionReload>()
 
@@ -45,7 +45,7 @@ final class AlbumsViewModel: AlbumsViewModelType {
         bindForSearch()
     }
 
-    var dataList: [Session] {
+    var dataList: [Movie] {
         isSearchingMode ? searchResultList : sessionsList
     }
 
@@ -60,13 +60,13 @@ final class AlbumsViewModel: AlbumsViewModelType {
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
-        let apiEndpoint = AlbumsApi.feed(page: page.currentPage, count: page.countPerPage)
-        let api: Observable<AlbumsResponse?> = apiClient.getData(of: apiEndpoint)
+        let apiEndpoint = MovieApi.feed(page: page.currentPage, count: page.countPerPage)
+        let api: Observable<MoviesResponse?> = apiClient.getData(of: apiEndpoint)
         let concurrentScheduler = ConcurrentDispatchQueueScheduler(qos: .background)
         api.subscribeOn(concurrentScheduler)
             .delay(DispatchTimeInterval.seconds(0), scheduler: concurrentScheduler)
             .subscribe(onNext: { [unowned self] response in
-                self.updateUI(with: response?.data.sessions ?? [])
+                self.updateUI(with: response?.results ?? [])
             }, onError: { [unowned self] err in
                 self.error.onNext(err.localizedDescription)
                 self.isDataLoading.onNext(false)
@@ -83,8 +83,8 @@ final class AlbumsViewModel: AlbumsViewModelType {
 
 // MARK: private
 
-private extension AlbumsViewModel {
-    func updateUI(with sessions: [Session]) {
+private extension MoviesViewModel {
+    func updateUI(with sessions: [Movie]) {
         isDataLoading.onNext(false)
         let startRange = sessionsList.count
         sessionsList.append(contentsOf: sessions)
@@ -102,10 +102,10 @@ private extension AlbumsViewModel {
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] text in
                 self.isSearchLoading.onNext(true)
-                let endpoint: Observable<AlbumsResponse?> = self.apiClient.getData(of: AlbumsApi.search(text))
+                let endpoint: Observable<Movie?> = self.apiClient.getData(of: MovieApi.search(text))
                 endpoint.subscribe(onNext: { [unowned self] value in
                     self.isSearchingMode = true
-                    self.searchResultList = value?.data.sessions ?? []
+//                    self.searchResultList = value?.data.sessions ?? []
                     self.reloadFields.onNext(.all)
                     self.isSearchLoading.onNext(false)
                 }, onError: { [unowned self] err in

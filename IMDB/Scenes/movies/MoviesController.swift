@@ -10,12 +10,12 @@ import RxSwift
 import UIKit
 import RxCocoa
 
-final class AlbumsController: UICollectionViewController {
-    private let viewModel: AlbumsViewModelType
+final class MoviesController: UICollectionViewController {
+    private let viewModel: MoviesViewModelType
     private let disposeBag = DisposeBag()
-    private var albums: [Session] { viewModel.dataList }
+    private var albums: [Movie] { viewModel.dataList }
 
-    init(viewModel: AlbumsViewModelType) {
+    init(viewModel: MoviesViewModelType) {
         self.viewModel = viewModel
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
@@ -35,7 +35,7 @@ final class AlbumsController: UICollectionViewController {
 
 // MARK: - setup
 
-private extension AlbumsController {
+private extension MoviesController {
     private func show(error: String) {
         let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Str.cancel, style: .cancel, handler: nil))
@@ -65,7 +65,7 @@ private extension AlbumsController {
 
     func setupCollection() {
         title = Str.albumsTitle
-        collectionView.register(AlbumCollectionCell.self)
+        collectionView.register(MovieCollectionCell.self)
         collectionView.register(ActivityIndicatorFooterView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                                 withReuseIdentifier: ActivityIndicatorFooterView.id)
@@ -90,7 +90,7 @@ private extension AlbumsController {
 
 // MARK: - UISearchResultsUpdating
 
-extension AlbumsController: UISearchResultsUpdating {
+extension MoviesController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard searchController.isActive else {
             viewModel.searchCanceled()
@@ -103,13 +103,13 @@ extension AlbumsController: UISearchResultsUpdating {
 
 // MARK: - UICollectionViewDataSource
 
-extension AlbumsController {
+extension MoviesController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return albums.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumCollectionCell.identifier, for: indexPath) as! AlbumCollectionCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionCell.identifier, for: indexPath) as! MovieCollectionCell
         cell.setData(with: albums[indexPath.row])
         return cell
     }
@@ -129,7 +129,7 @@ extension AlbumsController {
 
 // MARK: - UICollectionViewDataSourcePrefetching
 
-extension AlbumsController: UICollectionViewDataSourcePrefetching {
+extension MoviesController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         viewModel.prefetchItemsAt(prefetch: true, indexPaths: indexPaths)
     }

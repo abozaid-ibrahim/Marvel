@@ -1,5 +1,5 @@
 //
-//  AlbumCollectionCell.swift
+//  MovieCollectionCell.swift
 //  IMDB
 //
 //  Created by abuzeid on 13.08.20.
@@ -8,18 +8,18 @@
 
 import UIKit
 
-final class AlbumCollectionCell: UICollectionViewCell {
+final class MovieCollectionCell: UICollectionViewCell {
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var titleLabel: UILabel!
     @IBOutlet private var genresLabel: UILabel!
     private var imageLoader: Disposable?
     
-    func setData(with session: Session) {
-        imageLoader = imageView.setImage(with: session.currentTrack.artworkURL)
-        nameLabel.text = session.name
-        titleLabel.text = session.currentTrack.title
-        genresLabel.text = String(session.genres.count)
+    func setData(with session: Movie) {
+        imageLoader = imageView.setImage(with: session.posterPath ?? "")
+        nameLabel.text = session.title
+        titleLabel.text = session.overview
+//        genresLabel.text = String(session.genres.count)
     }
 
     override func awakeFromNib() {

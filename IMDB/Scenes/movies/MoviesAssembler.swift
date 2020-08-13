@@ -10,17 +10,17 @@ import Foundation
 import UIKit
 
 enum Destination {
-    case albums
+    case movies
     var controller: UIViewController {
         switch self {
-        case .albums:
-            return getAlbumsController()
+        case .movies:
+            return getMoviesController()
         }
     }
 }
 
 extension Destination {
-    func getAlbumsController() -> UIViewController {
-        return AlbumsController(viewModel: AlbumsViewModel())
+    func getMoviesController() -> UIViewController {
+        return MoviesController(viewModel: MoviesViewModel())
     }
 }

@@ -19,7 +19,7 @@ final class AppNavigator: Navigator {
 
     @discardableResult
     init(window: UIWindow) {
-        AppNavigator.navigationController = UINavigationController(rootViewController: Destination.albums.controller)
+        AppNavigator.navigationController = UINavigationController(rootViewController: Destination.movies.controller)
         window.rootViewController = AppNavigator.navigationController
         window.makeKeyAndVisible()
     }
