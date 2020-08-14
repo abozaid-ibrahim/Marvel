@@ -6,14 +6,14 @@
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 
+import RxCocoa
 import RxSwift
 import UIKit
-import RxCocoa
 
 final class MoviesController: UICollectionViewController {
     private let viewModel: MoviesViewModelType
     private let disposeBag = DisposeBag()
-    private var albums: [Movie] { viewModel.dataList }
+    private var movies: [Movie] { viewModel.dataList }
 
     init(viewModel: MoviesViewModelType) {
         self.viewModel = viewModel
@@ -105,12 +105,12 @@ extension MoviesController: UISearchResultsUpdating {
 
 extension MoviesController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return albums.count
+        return movies.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionCell.identifier, for: indexPath) as! MovieCollectionCell
-        cell.setData(with: albums[indexPath.row])
+        cell.setData(with: movies[indexPath.row])
         return cell
     }
 
@@ -124,6 +124,10 @@ extension MoviesController {
         default:
             fatalError("Unexpected element kind")
         }
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        AppNavigator.shared.push(.movieDetails(movies[indexPath.row]))
     }
 }
 

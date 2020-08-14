@@ -19,8 +19,8 @@ final class RatingBar: UIView {
         }
     }
 
-    @IBInspectable var ratingMax: CGFloat = 4
-    @IBInspectable var numStars: Int = 4
+    @IBInspectable var ratingMax: CGFloat = 5
+    @IBInspectable var numStars: Int = 5
     @IBInspectable var canAnimation: Bool = false
     @IBInspectable var animationTimeInterval: TimeInterval = 0.2
     @IBInspectable var isIndicator: Bool = false

@@ -6,7 +6,6 @@
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 
-// MARK: - MoviesResponse
 
 struct MoviesResponse: Codable {
     let page: Int
@@ -22,11 +21,13 @@ struct MoviesResponse: Codable {
 }
 
 // MARK: - Dates
+
 struct Dates: Codable {
     let maximum, minimum: String
 }
 
 // MARK: - Result
+
 struct Movie: Codable {
     let posterPath: String?
     let adult: Bool

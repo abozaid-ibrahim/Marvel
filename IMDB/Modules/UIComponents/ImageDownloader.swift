@@ -42,9 +42,10 @@ public final class ImageDownloader: ImageDownloaderType {
 extension UIImageView {
     enum Size: String {
         case thumbnail = "w500"
-        case original = "original"
+        case original
     }
 
+    @discardableResult
     func setImage(with path: String, size: Size = .original) -> Disposable? {
         guard let url = URL(string: "\(APIConstants.imageBaseUrl)\(size)\(path)") else { return nil }
         return ImageDownloader().downloadImageWith(url: url, completion: { [weak self] image in

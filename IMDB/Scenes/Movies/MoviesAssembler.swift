@@ -11,10 +11,13 @@ import UIKit
 
 enum Destination {
     case movies
+    case movieDetails(Movie)
     var controller: UIViewController {
         switch self {
         case .movies:
             return getMoviesController()
+        case let .movieDetails(movie):
+            return getMovieDetailsController(movie: movie)
         }
     }
 }
