@@ -107,7 +107,8 @@ private extension MoviesViewModel {
 
     func bindForSearch() {
         searchFor.distinctUntilChanged()
-            .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+            .filter{!$0.isEmpty}
+            .debounce(.milliseconds(400), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] text in
                 self.isSearchLoading.onNext(true)
                 let endpoint: Observable<MoviesResponse?> = self.apiClient.getData(of: MovieApi.search(text))

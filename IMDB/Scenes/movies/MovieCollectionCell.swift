@@ -10,16 +10,12 @@ import UIKit
 
 final class MovieCollectionCell: UICollectionViewCell {
     @IBOutlet private var imageView: UIImageView!
-    @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var titleLabel: UILabel!
-    @IBOutlet private var genresLabel: UILabel!
     private var imageLoader: Disposable?
 
     func setData(with session: Movie) {
         imageLoader = imageView.setImage(with: session.posterPath ?? "")
-        nameLabel.text = session.title
-        titleLabel.text = session.overview
-//        genresLabel.text = String(session.genres.count)
+        titleLabel.text = session.title
     }
 
     override func awakeFromNib() {
