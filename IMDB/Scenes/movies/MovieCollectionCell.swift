@@ -14,7 +14,7 @@ final class MovieCollectionCell: UICollectionViewCell {
     @IBOutlet private var titleLabel: UILabel!
     @IBOutlet private var genresLabel: UILabel!
     private var imageLoader: Disposable?
-    
+
     func setData(with session: Movie) {
         imageLoader = imageView.setImage(with: session.posterPath ?? "")
         nameLabel.text = session.title

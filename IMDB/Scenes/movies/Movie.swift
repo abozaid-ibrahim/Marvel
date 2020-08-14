@@ -11,7 +11,7 @@
 struct MoviesResponse: Codable {
     let page: Int
     let results: [Movie]
-    let dates: Dates
+    let dates: Dates?
     let totalPages, totalResults: Int
 
     enum CodingKeys: String, CodingKey {
@@ -28,14 +28,14 @@ struct Dates: Codable {
 
 // MARK: - Result
 struct Movie: Codable {
-    let posterPath: String
+    let posterPath: String?
     let adult: Bool
-    let overview, releaseDate: String
+    let overview, releaseDate: String?
     let genreIDS: [Int]
     let id: Int
     let originalTitle: String
     let originalLanguage: String?
-    let title, backdropPath: String
+    let title, backdropPath: String?
     let popularity: Double
     let voteCount: Int
     let video: Bool

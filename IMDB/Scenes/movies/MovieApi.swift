@@ -8,10 +8,8 @@
 
 import Foundation
 
-import Foundation
-
 enum MovieApi {
-    case feed(page: Int, count: Int)
+    case nowPlaying(page: Int)
     case search(String)
 }
 
@@ -22,7 +20,7 @@ extension MovieApi: RequestBuilder {
 
     var path: String {
         switch self {
-        case .feed:
+        case .nowPlaying:
             return "movie/now_playing"
         case .search:
             return "search/movie"
@@ -37,42 +35,30 @@ extension MovieApi: RequestBuilder {
         return .get
     }
 
-    var request: URLRequest {
+    var parameters: [String: Any] {
         switch self {
-        case .feed:
-            let prmDic = [
-                "api_key": APIConstants.apiToken,
-            ] as [String: Any]
-
-            var items = [URLQueryItem]()
-            var myURL = URLComponents(string: endpoint.absoluteString)
-            for (key, value) in prmDic {
-                items.append(URLQueryItem(name: key, value: "\(value)"))
-            }
-            myURL?.queryItems = items
-            var request = URLRequest(url: myURL!.url!, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 30)
-            request.httpMethod = method.rawValue
-            return request
-        case let .search(value):
-
-            let prmDic = [
-                "api_key": APIConstants.apiToken,
-                "query": value,
-            ] as [String: Any]
-
-            var items = [URLQueryItem]()
-            var myURL = URLComponents(string: endpoint.absoluteString)
-            for (key, value) in prmDic {
-                items.append(URLQueryItem(name: key, value: "\(value)"))
-            }
-            myURL?.queryItems = items
-            var request = URLRequest(url: myURL!.url!, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 30)
-            request.httpMethod = method.rawValue
-            return request
+        case let .search(query):
+            return ["api_key": APIConstants.apiToken,
+                    "query": query]
+        case let .nowPlaying(page):
+            return ["api_key": APIConstants.apiToken,
+                    "page": page]
         }
     }
 
+    var request: URLRequest {
+        var items = [URLQueryItem]()
+        var myURL = URLComponents(string: endpoint.absoluteString)
+        for (key, value) in parameters {
+            items.append(URLQueryItem(name: key, value: "\(value)"))
+        }
+        myURL?.queryItems = items
+        var request = URLRequest(url: myURL!.url!, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 30)
+        request.httpMethod = method.rawValue
+        return request
+    }
+
     var headers: [String: String]? {
-          return ["Content-Type": "application/json;charset=utf-8"]
+        return ["Content-Type": "application/json;charset=utf-8"]
     }
 }

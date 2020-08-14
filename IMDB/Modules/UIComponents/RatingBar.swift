@@ -8,6 +8,7 @@
 
 import UIKit
 typealias RatingValueChanged = (Float) -> Void
+
 final class RatingBar: UIView {
     var ratingValueChanged: RatingValueChanged?
     @IBInspectable var rating: CGFloat = 0 {

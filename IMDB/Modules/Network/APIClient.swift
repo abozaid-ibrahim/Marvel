@@ -6,20 +6,19 @@
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 import Foundation
-import RxSwift
 import RxCocoa
+import RxSwift
 
 protocol ApiClient {
     func getData<T: Decodable>(of request: RequestBuilder) -> Observable<T?>
     func cancel()
 }
 
-/// api handler, wrapper for the Url session
 final class HTTPClient: ApiClient {
     func cancel() {
-        //TODO:
+        // TODO:
     }
-    
+
     private let disposeBag = DisposeBag()
     func getData<T: Decodable>(of request: RequestBuilder) -> Observable<T?> {
         return excute(request).compactMap { $0?.toModel() }
@@ -28,13 +27,14 @@ final class HTTPClient: ApiClient {
     /// fire the http request and return observable of the data or emit an error
     /// - Parameter request: the req uest that have all the details that need to call the remote api
     private func excute(_ request: RequestBuilder) -> Observable<Data?> {
-        
         return Observable<Data?>.create { (observer) -> RxSwift.Disposable in
             let task = URLSession.shared.dataTask(with: request.request) { data, response, error in
-                print(">>\(request.request.url?.absoluteString)")
-                print(">>\(data?.toString)")
-                print(">>\(response)")
-                print(">>\(error)")
+                log(request)
+                log(request.request)
+                log(request.parameters ?? [:])
+                log(response)
+                log(data?.toString ?? "")
+                log(error, level: .error)
 
                 if let error = error {
                     observer.onError(error)

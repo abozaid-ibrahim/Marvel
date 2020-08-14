@@ -16,10 +16,11 @@ public protocol RequestBuilder {
 
     var request: URLRequest { get }
 
+    var parameters: [String: Any] { get }
+
     var headers: [String: String]? { get }
 }
 
 public enum HttpMethod: String {
     case get, post
 }
-

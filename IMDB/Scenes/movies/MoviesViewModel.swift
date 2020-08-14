@@ -35,7 +35,7 @@ final class MoviesViewModel: MoviesViewModelType {
     private let apiClient: ApiClient
     private var page = Page()
     private var isSearchingMode = false
-    private var sessionsList: [Movie] = []
+    private var moviesList: [Movie] = []
     private var searchResultList: [Movie] = []
 
     private(set) var reloadFields = PublishSubject<CollectionReload>()
@@ -46,7 +46,7 @@ final class MoviesViewModel: MoviesViewModelType {
     }
 
     var dataList: [Movie] {
-        isSearchingMode ? searchResultList : sessionsList
+        isSearchingMode ? searchResultList : moviesList
     }
 
     func searchCanceled() {
@@ -60,13 +60,14 @@ final class MoviesViewModel: MoviesViewModelType {
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
-        let apiEndpoint = MovieApi.feed(page: page.currentPage, count: page.countPerPage)
+        let apiEndpoint = MovieApi.nowPlaying(page: page.currentPage)
         let api: Observable<MoviesResponse?> = apiClient.getData(of: apiEndpoint)
         let concurrentScheduler = ConcurrentDispatchQueueScheduler(qos: .background)
         api.subscribeOn(concurrentScheduler)
             .delay(DispatchTimeInterval.seconds(0), scheduler: concurrentScheduler)
             .subscribe(onNext: { [unowned self] response in
                 self.updateUI(with: response?.results ?? [])
+                self.updatePage(total: response?.totalPages ?? 0)
             }, onError: { [unowned self] err in
                 self.error.onNext(err.localizedDescription)
                 self.isDataLoading.onNext(false)
@@ -84,17 +85,24 @@ final class MoviesViewModel: MoviesViewModelType {
 // MARK: private
 
 private extension MoviesViewModel {
+    func updatePage(total: Int) {
+        page.currentPage += 1
+        page.isFetchingData = false
+        page.totalPages = total
+        page.fetchedItemsCount = moviesList.count
+
+    }
+
     func updateUI(with sessions: [Movie]) {
         isDataLoading.onNext(false)
-        let startRange = sessionsList.count
-        sessionsList.append(contentsOf: sessions)
+        let startRange = moviesList.count
+        moviesList.append(contentsOf: sessions)
         if page.currentPage == 0 {
             reloadFields.onNext(.all)
         } else {
-            let rows = (startRange ... sessionsList.count - 1).map { IndexPath(row: $0, section: 0) }
+            let rows = (startRange ... moviesList.count - 1).map { IndexPath(row: $0, section: 0) }
             reloadFields.onNext(.insertIndexPaths(rows))
         }
-        updatePage(with: sessionsList.count)
     }
 
     func bindForSearch() {
@@ -102,10 +110,10 @@ private extension MoviesViewModel {
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] text in
                 self.isSearchLoading.onNext(true)
-                let endpoint: Observable<Movie?> = self.apiClient.getData(of: MovieApi.search(text))
+                let endpoint: Observable<MoviesResponse?> = self.apiClient.getData(of: MovieApi.search(text))
                 endpoint.subscribe(onNext: { [unowned self] value in
                     self.isSearchingMode = true
-//                    self.searchResultList = value?.data.sessions ?? []
+                    self.searchResultList = value?.results ?? []
                     self.reloadFields.onNext(.all)
                     self.isSearchLoading.onNext(false)
                 }, onError: { [unowned self] err in
@@ -115,9 +123,5 @@ private extension MoviesViewModel {
             }).disposed(by: disposeBag)
     }
 
-    func updatePage(with count: Int) {
-        page.isFetchingData = false
-        page.currentPage += 1
-        page.fetchedItemsCount = count
-    }
+   
 }
