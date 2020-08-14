@@ -11,8 +11,6 @@ import UIKit
 
 extension Destination {
     func getMovieDetailsController(movie: Movie) -> UIViewController {
-        let controller = MovieDetailsController()
-        controller.movie = movie
-        return controller
+        return MovieDetailsController(movie: movie)
     }
 }

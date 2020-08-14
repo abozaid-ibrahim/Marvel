@@ -8,6 +8,7 @@
 
 import Foundation
 enum LoggingLevels {
+    var isEnabled: Bool { return false }
     case info, error
     var value: String {
         switch self {
@@ -21,6 +22,6 @@ enum LoggingLevels {
 
 func log(_ value: Any?..., level: LoggingLevels = .info) {
     #if DEBUG
-        print("\(level.value) \(value)")
+        if level.isEnabled { print("\(level.value) \(value)") }
     #endif
 }

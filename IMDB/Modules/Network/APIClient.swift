@@ -31,7 +31,6 @@ final class HTTPClient: ApiClient {
             let task = URLSession.shared.dataTask(with: request.request) { data, response, error in
                 log(request)
                 log(request.request)
-                log(request.parameters ?? [:])
                 log(response)
                 log(data?.toString ?? "")
                 log(error, level: .error)

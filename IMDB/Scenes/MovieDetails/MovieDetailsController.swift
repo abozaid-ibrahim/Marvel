@@ -14,9 +14,24 @@ final class MovieDetailsController: UIViewController {
     @IBOutlet private var overviewLabel: UILabel!
     @IBOutlet private var ratingBar: RatingBar!
     @IBOutlet private var releaseDate: UILabel!
-    var movie: Movie!
+    let movie: Movie
+    init(movie: Movie) {
+        self.movie = movie
+        super.init(nibName: String(describing: MovieDetailsController.self),
+                   bundle: Bundle(for: MovieDetailsController.self))
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        setData()
+    }
+
+    private func setData() {
         title = movie.originalTitle
         ratingBar.rating = movie.rating
         titleLabel.text = movie.title
