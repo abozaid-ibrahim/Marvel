@@ -50,6 +50,9 @@
                                                 <constraint firstAttribute="height" constant="25" id="7fE-Bn-bnz"/>
                                                 <constraint firstAttribute="width" constant="100" id="Q5b-An-WiU"/>
                                             </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="isIndicator" value="NO"/>
+                                            </userDefinedRuntimeAttributes>
                                         </view>
                                     </subviews>
                                 </stackView>
@@ -79,6 +82,9 @@
                 </scrollView>
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <accessibility key="accessibilityConfiguration" identifier="details_view">
+                <bool key="isElement" value="YES"/>
+            </accessibility>
             <constraints>
                 <constraint firstItem="7zU-Jv-gSC" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="2jG-fP-Xeq"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="7zU-Jv-gSC" secondAttribute="bottom" id="In6-gU-pF1"/>

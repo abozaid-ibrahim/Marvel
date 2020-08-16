@@ -80,7 +80,7 @@ private extension MoviesController {
         searchController.searchBar.placeholder = Str.search
         viewModel.isSearchLoading
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: {
+            .subscribe(onNext: { [unowned searchController] in
                 searchController.searchBar.isLoading = $0
             }).disposed(by: disposeBag)
         navigationItem.searchController = searchController

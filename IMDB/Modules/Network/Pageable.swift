@@ -15,6 +15,6 @@ final class Page {
     var isFetchingData = false
     var fetchedItemsCount = 0
     var shouldLoadMore: Bool {
-        (currentPage < totalPages) && (!isFetchingData)
+        (currentPage <= totalPages) && (!isFetchingData)
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-enum CollectionReload {
+enum CollectionReload: Equatable {
     case all
     case insertIndexPaths([IndexPath])
 }
@@ -55,23 +55,25 @@ final class MoviesViewModel: MoviesViewModelType {
     }
 
     func loadData() {
+        print(">>>load")
         guard page.shouldLoadMore else {
+            print(">>>paged finished")
             return
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
         let apiEndpoint = MovieApi.nowPlaying(page: page.currentPage)
-        let api: Observable<MoviesResponse?> = apiClient.getData(of: apiEndpoint)
-        let concurrentScheduler = ConcurrentDispatchQueueScheduler(qos: .background)
-        api.subscribeOn(concurrentScheduler)
-            .delay(DispatchTimeInterval.seconds(0), scheduler: concurrentScheduler)
-            .subscribe(onNext: { [unowned self] response in
-                self.updateUI(with: response?.results ?? [])
-                self.updatePage(total: response?.totalPages ?? 0)
-            }, onError: { [unowned self] err in
-                self.error.onNext(err.localizedDescription)
-                self.isDataLoading.onNext(false)
-            }).disposed(by: disposeBag)
+        apiClient.getData(of: apiEndpoint) { [weak self] result in
+            switch result {
+            case let .success(data):
+                let response: MoviesResponse? = data.parse()
+                self?.updateUI(with: response?.results ?? [])
+                self?.updatePage(total: response?.totalPages ?? 0)
+            case let .failure(error):
+                self?.error.onNext(error.localizedDescription)
+                self?.isDataLoading.onNext(false)
+            }
+        }
     }
 
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath]) {
@@ -90,16 +92,15 @@ private extension MoviesViewModel {
         page.isFetchingData = false
         page.totalPages = total
         page.fetchedItemsCount = moviesList.count
-
     }
 
     func updateUI(with sessions: [Movie]) {
         isDataLoading.onNext(false)
         let startRange = moviesList.count
         moviesList.append(contentsOf: sessions)
-        if page.currentPage == 0 {
+        if page.currentPage == 1 {
             reloadFields.onNext(.all)
-        } else {
+        } else if moviesList.count > startRange {
             let rows = (startRange ... moviesList.count - 1).map { IndexPath(row: $0, section: 0) }
             reloadFields.onNext(.insertIndexPaths(rows))
         }
@@ -107,22 +108,24 @@ private extension MoviesViewModel {
 
     func bindForSearch() {
         searchFor.distinctUntilChanged()
-            .filter{!$0.isEmpty}
+            .filter { !$0.isEmpty }
             .debounce(.milliseconds(400), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] text in
                 self.isSearchLoading.onNext(true)
-                let endpoint: Observable<MoviesResponse?> = self.apiClient.getData(of: MovieApi.search(text))
-                endpoint.subscribe(onNext: { [unowned self] value in
-                    self.isSearchingMode = true
-                    self.searchResultList = value?.results ?? []
-                    self.reloadFields.onNext(.all)
-                    self.isSearchLoading.onNext(false)
-                }, onError: { [unowned self] err in
-                    self.error.onNext(err.localizedDescription)
-                    self.isSearchLoading.onNext(false)
-                }).disposed(by: self.disposeBag)
+                self.apiClient.getData(of: MovieApi.search(text)) { result in
+                    switch result {
+                    case let .success(data):
+                        let response: MoviesResponse? = data.parse()
+                        self.isSearchingMode = true
+                        self.searchResultList = response?.results ?? []
+                        self.reloadFields.onNext(.all)
+                        self.isSearchLoading.onNext(false)
+                    case let .failure(error):
+                        self.error.onNext(error.localizedDescription)
+                        self.isSearchLoading.onNext(false)
+                    }
+                }
+
             }).disposed(by: disposeBag)
     }
-
-   
 }

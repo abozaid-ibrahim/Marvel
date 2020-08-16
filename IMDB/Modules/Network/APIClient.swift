@@ -6,49 +6,36 @@
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 import Foundation
-import RxCocoa
-import RxSwift
 
 protocol ApiClient {
-    func getData<T: Decodable>(of request: RequestBuilder) -> Observable<T?>
+    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, NetworkError>) -> Void)
     func cancel()
 }
 
 final class HTTPClient: ApiClient {
+    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, NetworkError>) -> Void) {
+        let task = URLSession.shared.dataTask(with: request.request) { data, response, error in
+            log(error, level: .error)
+            if let error = error {
+                completion(.failure(.messge(error.localizedDescription)))
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse,
+                (200 ... 299).contains(httpResponse.statusCode) else {
+                completion(.failure(.outOfRange))
+                return
+            }
+            guard let data = data else {
+                completion(.failure(.dataIsNil))
+                return
+            }
+            completion(.success(data))
+        }
+
+        task.resume()
+    }
+
     func cancel() {
         // TODO:
-    }
-
-    private let disposeBag = DisposeBag()
-    func getData<T: Decodable>(of request: RequestBuilder) -> Observable<T?> {
-        return excute(request).compactMap { $0?.toModel() }
-    }
-
-    /// fire the http request and return observable of the data or emit an error
-    /// - Parameter request: the req uest that have all the details that need to call the remote api
-    private func excute(_ request: RequestBuilder) -> Observable<Data?> {
-        return Observable<Data?>.create { (observer) -> RxSwift.Disposable in
-            let task = URLSession.shared.dataTask(with: request.request) { data, response, error in
-                log(request)
-                log(request.request)
-                log(response)
-                log(data?.toString ?? "")
-                log(error, level: .error)
-
-                if let error = error {
-                    observer.onError(error)
-                    return
-                }
-                guard let httpResponse = response as? HTTPURLResponse,
-                    (200 ... 299).contains(httpResponse.statusCode) else {
-                    observer.onError(NetworkFailure.generalFailure)
-                    return
-                }
-                observer.onNext(data)
-            }
-            task.resume()
-            return Disposables.create()
-        }
-        .share(replay: 0, scope: .forever)
     }
 }

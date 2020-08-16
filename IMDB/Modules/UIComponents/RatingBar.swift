@@ -21,9 +21,9 @@ final class RatingBar: UIView {
 
     @IBInspectable var ratingMax: CGFloat = 5
     @IBInspectable var numStars: Int = 5
-    @IBInspectable var canAnimation: Bool = false
+    @IBInspectable var canAnimation: Bool = true
     @IBInspectable var animationTimeInterval: TimeInterval = 0.2
-    @IBInspectable var isIndicator: Bool = false
+    @IBInspectable var isIndicator: Bool = true
     @IBInspectable var imageLight: UIImage = UIImage(named: "star_on")!
     @IBInspectable var imageDark: UIImage = UIImage(named: "star_off")!
 

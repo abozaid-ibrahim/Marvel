@@ -6,8 +6,13 @@
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 import Foundation
-enum NetworkFailure: LocalizedError {
-    case generalFailure, failedToParseData, connectionFailed
+enum NetworkError: LocalizedError {
+    case generalFailure
+    case failedToParseData
+    case dataIsNil
+    case connectionFailed
+    case outOfRange
+case messge(String)
     var errorDescription: String? {
         switch self {
         case .failedToParseData:
