@@ -55,9 +55,7 @@ final class MoviesViewModel: MoviesViewModelType {
     }
 
     func loadData() {
-        print(">>>load")
         guard page.shouldLoadMore else {
-            print(">>>paged finished")
             return
         }
         page.isFetchingData = true
@@ -77,7 +75,7 @@ final class MoviesViewModel: MoviesViewModelType {
     }
 
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath]) {
-        guard let max = indexPaths.map({ $0.row }).max() else { return }
+        guard let max = indexPaths.map({ $0.row }).max(), !isSearchingMode else { return }
         if page.fetchedItemsCount <= (max + 1) {
             prefetch ? loadData() : apiClient.cancel()
         }
@@ -102,7 +100,7 @@ private extension MoviesViewModel {
             reloadFields.onNext(.all)
         } else if moviesList.count > startRange {
             let rows = (startRange ... moviesList.count - 1).map { IndexPath(row: $0, section: 0) }
-            reloadFields.onNext(.insertIndexPaths(rows))
+            reloadFields.onNext(.insertItems(rows))
         }
     }
 
