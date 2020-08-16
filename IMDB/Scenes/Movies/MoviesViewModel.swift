@@ -110,7 +110,8 @@ private extension MoviesViewModel {
             .debounce(.milliseconds(400), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] text in
                 self.isSearchLoading.onNext(true)
-                self.apiClient.getData(of: MovieApi.search(text)) { result in
+                self.apiClient.getData(of: MovieApi.search(text)) { [weak self] result in
+                    guard let self = self else { return }
                     switch result {
                     case let .success(data):
                         let response: MoviesResponse? = data.parse()

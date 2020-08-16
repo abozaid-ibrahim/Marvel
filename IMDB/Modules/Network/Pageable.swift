@@ -9,7 +9,6 @@ import Foundation
 
 final class Page {
     let defaultPageIndex = 1
-
     lazy var currentPage: Int = self.defaultPageIndex
     var totalPages: Int = 5
     var isFetchingData = false

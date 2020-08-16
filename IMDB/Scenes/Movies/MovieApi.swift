@@ -27,7 +27,7 @@ extension MovieApi: RequestBuilder {
         }
     }
 
-    var endpoint: URL {
+    private var endpoint: URL {
         return URL(string: "\(baseURL)\(path)")!
     }
 
@@ -48,17 +48,15 @@ extension MovieApi: RequestBuilder {
 
     var request: URLRequest {
         var items = [URLQueryItem]()
-        var myURL = URLComponents(string: endpoint.absoluteString)
+        var urlComponents = URLComponents(string: endpoint.absoluteString)
         for (key, value) in parameters {
             items.append(URLQueryItem(name: key, value: "\(value)"))
         }
-        myURL?.queryItems = items
-        var request = URLRequest(url: myURL!.url!, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 30)
+        urlComponents?.queryItems = items
+        var request = URLRequest(url: urlComponents!.url!, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 30)
         request.httpMethod = method.rawValue
         return request
     }
 
-    var headers: [String: String]? {
-        return ["Content-Type": "application/json;charset=utf-8"]
-    }
+   
 }

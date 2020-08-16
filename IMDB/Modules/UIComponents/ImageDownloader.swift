@@ -23,7 +23,6 @@ extension URLSessionDataTask: Disposable {
     }
 }
 
-// TODO: Add Image Local Caching
 public final class ImageDownloader: ImageDownloaderType {
     func downloadImageWith(url: URL, completion: DownloadImageCompletion? = nil) -> Disposable {
         let dataTask = URLSession.shared.dataTask(with: url) { data, _, _ in

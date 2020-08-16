@@ -25,6 +25,6 @@ final class MovieCollectionCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        imageLoader = nil
+        imageLoader?.dispose()
     }
 }

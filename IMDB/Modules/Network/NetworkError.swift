@@ -12,7 +12,7 @@ enum NetworkError: LocalizedError {
     case dataIsNil
     case connectionFailed
     case outOfRange
-case messge(String)
+    case apiError(String)
     var errorDescription: String? {
         switch self {
         case .failedToParseData:

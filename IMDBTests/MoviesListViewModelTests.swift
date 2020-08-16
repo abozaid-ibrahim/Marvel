@@ -54,22 +54,17 @@ final class MoviesListViewModelTests: XCTestCase {
 final class MockedSuccessApi: ApiClient {
     func getData(of request: RequestBuilder, completion: @escaping (Result<Data, NetworkError>) -> Void) {
         let movie = Movie(posterPath: nil,
-                          adult: false,
                           overview: nil,
                           releaseDate: nil,
-                          genreIDS: [],
                           id: 0,
                           originalTitle: "Hello",
-                          originalLanguage: nil,
                           title: nil,
                           backdropPath: nil,
                           popularity: 0,
                           voteCount: 1,
-                          video: true,
                           voteAverage: 3.2)
         let response = MoviesResponse(page: 1,
                                       results: .init(repeating: movie, count: 10),
-                                      dates: nil,
                                       totalPages: 3,
                                       totalResults: 30)
 

@@ -44,7 +44,3 @@ final class AppNavigator: Navigator {
         AppNavigator.navigationController.viewControllers = [dest.controller]
     }
 }
-
-enum NavigatorError: Error {
-    case noRoot
-}

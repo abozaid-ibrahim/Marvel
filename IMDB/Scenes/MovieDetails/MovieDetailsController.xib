@@ -28,7 +28,7 @@
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="l2e-0s-AlW">
                             <rect key="frame" x="8" y="8" width="398" height="684.5"/>
                             <subviews>
-                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4vZ-CB-Z4d">
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4vZ-CB-Z4d">
                                     <rect key="frame" x="0.0" y="0.0" width="398" height="597"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="4vZ-CB-Z4d" secondAttribute="height" multiplier="6:9" id="jDs-lj-0hp"/>
@@ -72,11 +72,11 @@
                         </stackView>
                     </subviews>
                     <constraints>
-                        <constraint firstItem="l2e-0s-AlW" firstAttribute="width" secondItem="7zU-Jv-gSC" secondAttribute="width" constant="-16" id="7uj-Cf-U9R"/>
-                        <constraint firstItem="l2e-0s-AlW" firstAttribute="centerX" secondItem="7zU-Jv-gSC" secondAttribute="centerX" id="Dtm-sf-Gqa"/>
+                        <constraint firstItem="l2e-0s-AlW" firstAttribute="width" secondItem="7zU-Jv-gSC" secondAttribute="width" constant="-16" id="4or-Ve-noy"/>
                         <constraint firstAttribute="trailing" secondItem="l2e-0s-AlW" secondAttribute="trailing" constant="8" id="LxE-w0-E9p"/>
                         <constraint firstItem="l2e-0s-AlW" firstAttribute="top" secondItem="7zU-Jv-gSC" secondAttribute="top" constant="8" id="cnt-66-Y8T"/>
                         <constraint firstItem="l2e-0s-AlW" firstAttribute="leading" secondItem="7zU-Jv-gSC" secondAttribute="leading" constant="8" id="e3o-nZ-Vjj"/>
+                        <constraint firstItem="l2e-0s-AlW" firstAttribute="centerX" secondItem="7zU-Jv-gSC" secondAttribute="centerX" id="gL9-0g-OmQ"/>
                         <constraint firstAttribute="bottom" secondItem="l2e-0s-AlW" secondAttribute="bottom" constant="8" id="iBa-jo-qmS"/>
                     </constraints>
                 </scrollView>

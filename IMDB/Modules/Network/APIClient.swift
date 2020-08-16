@@ -17,7 +17,7 @@ final class HTTPClient: ApiClient {
         let task = URLSession.shared.dataTask(with: request.request) { data, response, error in
             log(error, level: .error)
             if let error = error {
-                completion(.failure(.messge(error.localizedDescription)))
+                completion(.failure(.apiError(error.localizedDescription)))
                 return
             }
             guard let httpResponse = response as? HTTPURLResponse,

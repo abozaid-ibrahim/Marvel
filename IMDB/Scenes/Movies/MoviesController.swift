@@ -13,7 +13,6 @@ import UIKit
 final class MoviesController: UICollectionViewController {
     private let viewModel: MoviesViewModelType
     private let disposeBag = DisposeBag()
-    private var movies: [Movie] { viewModel.dataList }
 
     init(viewModel: MoviesViewModelType) {
         self.viewModel = viewModel
@@ -24,6 +23,8 @@ final class MoviesController: UICollectionViewController {
     required init?(coder: NSCoder) {
         fatalError("Unsupported")
     }
+
+    private var movies: [Movie] { viewModel.dataList }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +37,7 @@ final class MoviesController: UICollectionViewController {
 // MARK: - setup
 
 private extension MoviesController {
-    private func show(error: String) {
+    func show(error: String) {
         let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Str.cancel, style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
@@ -44,23 +45,25 @@ private extension MoviesController {
 
     func bindToViewModel() {
         viewModel.reloadFields
-            .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [unowned self] reload in
-                switch reload {
-                case .all: self.collectionView.reloadData()
-                case let .insertItems(paths): self.collectionView.insertItems(at: paths)
-                }
-            })
+            .asDriver(onErrorJustReturn: .all)
+            .drive(onNext: collection(reload:))
             .disposed(by: disposeBag)
         viewModel.isDataLoading
-            .observeOn(MainScheduler.instance)
-            .map { $0 ? CGFloat(50) : CGFloat(0) }
-            .bind(onNext: collectionView.updateFooterHeight(height:)).disposed(by: disposeBag)
+            .compactMap { $0 ? CGFloat(50) : CGFloat(0) }
+            .asDriver(onErrorJustReturn: 0)
+            .drive(onNext: collectionView.updateFooterHeight(height:)).disposed(by: disposeBag)
 
         viewModel.error
-            .observeOn(MainScheduler.instance)
-            .bind(onNext: show(error:)).disposed(by: disposeBag)
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: show(error:)).disposed(by: disposeBag)
         viewModel.loadData()
+    }
+
+    func collection(reload: CollectionReload) {
+        switch reload {
+        case .all: collectionView.reloadData()
+        case let .insertItems(paths): collectionView.insertItems(at: paths)
+        }
     }
 
     func setupCollection() {
