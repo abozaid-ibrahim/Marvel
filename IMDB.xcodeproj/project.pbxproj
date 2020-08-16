@@ -105,6 +105,7 @@
 		6CC83B3A24E5EBD400DE4EDC /* UIView+Constrains.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Constrains.swift"; sourceTree = "<group>"; };
 		6CC83B3C24E5F43F00DE4EDC /* APIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConstants.swift; sourceTree = "<group>"; };
 		6CCD6EFB24E964C400B9AA61 /* Data+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Codable.swift"; sourceTree = "<group>"; };
+		6CCD6EFD24E9855500B9AA61 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		ABEB845C68B0266037B7510B /* Pods-IMDB-IMDBUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IMDB-IMDBUITests.release.xcconfig"; path = "Target Support Files/Pods-IMDB-IMDBUITests/Pods-IMDB-IMDBUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D3D3776B6126274FD9EEDCB7 /* Pods_IMDB_IMDBUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IMDB_IMDBUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAC0F2F1638EF2E7A4534541 /* Pods-IMDB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IMDB.release.xcconfig"; path = "Target Support Files/Pods-IMDB/Pods-IMDB.release.xcconfig"; sourceTree = "<group>"; };
@@ -177,6 +178,7 @@
 		6CC83AC424E57FEA00DE4EDC = {
 			isa = PBXGroup;
 			children = (
+				6CCD6EFD24E9855500B9AA61 /* README.md */,
 				6CC83ACF24E57FEA00DE4EDC /* IMDB */,
 				6CC83AE624E57FEB00DE4EDC /* IMDBTests */,
 				6CC83AF124E57FEB00DE4EDC /* IMDBUITests */,

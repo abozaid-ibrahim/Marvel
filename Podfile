@@ -7,6 +7,7 @@ target 'IMDB' do
 
    pod 'RxSwift'
    pod 'RxCocoa'
+
   target 'IMDBTests' do
     inherit! :search_paths
       pod 'RxTest'
