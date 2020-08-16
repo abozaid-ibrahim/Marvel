@@ -42,10 +42,9 @@ final class MoviesListViewModelTests: XCTestCase {
         let newItems2 = (20 ... 29).map { IndexPath(row: $0, section: 0) }
         schedular.start()
         XCTAssertEqual(reloadObserver.events, [.next(1, .all),
-                                               .next(2, .insertIndexPaths(newItems1)),
-                                               .next(3, .insertIndexPaths(newItems2))])
+                                               .next(2, .insertItems(newItems1)),
+                                               .next(3, .insertItems(newItems2))])
     }
-
 
     override func tearDown() {
         disposeBag = nil

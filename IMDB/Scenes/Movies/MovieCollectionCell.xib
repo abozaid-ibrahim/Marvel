@@ -19,7 +19,7 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XDo-Gf-tcu" userLabel="contentView">
                         <rect key="frame" x="0.0" y="0.0" width="293" height="266"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="messi" translatesAutoresizingMaskIntoConstraints="NO" id="qAo-e1-V0X">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qAo-e1-V0X">
                                 <rect key="frame" x="0.0" y="0.0" width="293" height="266"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c4I-tG-aEA">
@@ -69,7 +69,4 @@
             <point key="canvasLocation" x="313.768115942029" y="225.66964285714283"/>
         </collectionViewCell>
     </objects>
-    <resources>
-        <image name="messi" width="828" height="802"/>
-    </resources>
 </document>

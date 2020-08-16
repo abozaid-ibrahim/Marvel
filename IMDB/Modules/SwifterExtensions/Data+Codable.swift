@@ -13,7 +13,6 @@ extension Data {
             return try JSONDecoder().decode(T.self, from: self)
         } catch let error {
             log(error)
-//            fatalError(error.localizedDescription)
         }
         return nil
     }

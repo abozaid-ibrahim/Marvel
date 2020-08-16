@@ -48,7 +48,7 @@ private extension MoviesController {
             .subscribe(onNext: { [unowned self] reload in
                 switch reload {
                 case .all: self.collectionView.reloadData()
-                case let .insertIndexPaths(paths): self.collectionView.insertItems(at: paths)
+                case let .insertItems(paths): self.collectionView.insertItems(at: paths)
                 }
             })
             .disposed(by: disposeBag)

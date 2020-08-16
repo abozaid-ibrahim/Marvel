@@ -11,7 +11,7 @@ import RxSwift
 
 enum CollectionReload: Equatable {
     case all
-    case insertIndexPaths([IndexPath])
+    case insertItems([IndexPath])
 }
 
 protocol MoviesViewModelType {
