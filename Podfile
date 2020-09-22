@@ -1,19 +1,19 @@
 # Uncomment the next line to define a global platform for your project
 # platform :ios, '9.0'
 
-target 'IMDB' do
+target 'Marvel' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
    pod 'RxSwift'
    pod 'RxCocoa'
 
-  target 'IMDBTests' do
+  target 'MarvelTests' do
     inherit! :search_paths
       pod 'RxTest'
   end
 
-  target 'IMDBUITests' do
+  target 'MarvelUITests' do
     # Pods for testing
   end
 

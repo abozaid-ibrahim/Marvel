@@ -1,4 +1,4 @@
-# IMDB
+# Marvel
 
 ## Building And Running The Project (Requirements)
 * Swift 5.0+
@@ -11,16 +11,16 @@
 If this is your first time encountering swift/ios development, please follow [the instructions](https://developer.apple.com/support/xcode/) to setup Xcode and Swift on your Mac. And to setup cocoapods for dependency management, make use of [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#getting-started)
 -checkout Master branch to run latest version
 ## Setup Configs
-* Open the project by double clicking the `IMDB.xcworkspace` file
+* Open the project by double clicking the `Marvel.xcworkspace` file
 ```
 // App Settings
-APP_NAME = IMDB
-PRODUCT_BUNDLE_IDENTIFIER = com.abuzeid.IMDB
+APP_NAME = Marvel
+PRODUCT_BUNDLE_IDENTIFIER = com.abuzeid.Marvel
 
 #targets:
-* IMDB
-* IMDBTests
-* IMDBUITests
+* Marvel
+* MarvelTests
+* MarvelUITests
 
 ```
 
