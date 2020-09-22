@@ -11,15 +11,13 @@ protocol Navigator {
     func push(_ dest: Destination)
 }
 
-/// once app navigator is intialized,
-///  it have a root controller to do all navigation on till it recieve new root
 final class AppNavigator: Navigator {
     private static var navigationController: UINavigationController!
     static let shared = AppNavigator(root: AppNavigator.navigationController)
 
     @discardableResult
     init(window: UIWindow) {
-        AppNavigator.navigationController = UINavigationController(rootViewController: Destination.movies.controller)
+        AppNavigator.navigationController = UINavigationController(rootViewController: Destination.feedPage.controller)
         window.rootViewController = AppNavigator.navigationController
         window.makeKeyAndVisible()
     }

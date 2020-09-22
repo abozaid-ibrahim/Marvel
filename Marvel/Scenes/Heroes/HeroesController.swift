@@ -11,10 +11,10 @@ import RxSwift
 import UIKit
 
 final class MoviesController: UICollectionViewController {
-    private let viewModel: MoviesViewModelType
+    private let viewModel: HeroesViewModelType
     private let disposeBag = DisposeBag()
 
-    init(viewModel: MoviesViewModelType) {
+    init(viewModel: HeroesViewModelType) {
         self.viewModel = viewModel
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }

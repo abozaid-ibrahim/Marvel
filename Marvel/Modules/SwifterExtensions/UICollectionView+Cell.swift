@@ -19,7 +19,7 @@ extension UICollectionView {
         case twoColumn
     }
 
-    /// TIP: you must set the reuse identifier as same as the nib file name.
+    /// WARNING: you must set the reuse identifier as same as the nib file name.
     func register<T: UICollectionViewCell>(_: T.Type) {
         let nib = UINib(nibName: T.identifier, bundle: Bundle(for: T.self))
         register(nib, forCellWithReuseIdentifier: T.identifier)
@@ -44,5 +44,19 @@ extension UICollectionView {
         guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return }
         layout.footerReferenceSize = CGSize(width: layout.footerReferenceSize.width, height: height)
         setCollectionViewLayout(layout, animated: false)
+    }
+}
+
+extension UITableView {
+    /// WARNING: you must set the reuse identifier as same as the nib file name.
+    func register<T: UITableViewCell>(_: T.Type) {
+        let nib = UINib(nibName: T.identifier, bundle: Bundle(for: T.self))
+        register(nib, forCellReuseIdentifier: T.identifier)
+    }
+}
+
+extension UITableViewCell {
+    static var identifier: String {
+        return String(describing: self)
     }
 }

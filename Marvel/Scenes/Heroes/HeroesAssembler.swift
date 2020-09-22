@@ -24,6 +24,6 @@ enum Destination {
 
 extension Destination {
     func getMoviesController() -> UIViewController {
-        return MoviesController(viewModel: MoviesViewModel())
+        return MoviesController(viewModel: HeroesViewModel())
     }
 }

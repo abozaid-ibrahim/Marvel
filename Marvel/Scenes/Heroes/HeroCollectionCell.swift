@@ -14,8 +14,8 @@ final class MovieCollectionCell: UICollectionViewCell {
     private var imageLoader: Disposable?
 
     func setData(with movie: Movie) {
-        imageLoader = imageView.setImage(with: movie.posterPath ?? "")
-        titleLabel.text = movie.title
+        imageLoader = imageView.setImage(with: movie.photo)
+        titleLabel.text = movie.name
     }
 
     override func awakeFromNib() {

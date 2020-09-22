@@ -14,7 +14,7 @@ enum CollectionReload: Equatable {
     case insertItems([IndexPath])
 }
 
-protocol MoviesViewModelType {
+protocol HeroesViewModelType {
     var dataList: [Movie] { get }
     var error: PublishSubject<String> { get }
     var searchFor: PublishSubject<String> { get }
@@ -26,7 +26,7 @@ protocol MoviesViewModelType {
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath])
 }
 
-final class MoviesViewModel: MoviesViewModelType {
+final class MoviesViewModel: HeroesViewModelType {
     let error = PublishSubject<String>()
     let searchFor = PublishSubject<String>()
     let isDataLoading = PublishSubject<Bool>()
@@ -65,8 +65,8 @@ final class MoviesViewModel: MoviesViewModelType {
             switch result {
             case let .success(data):
                 let response: MoviesResponse? = data.parse()
-                self?.updateUI(with: response?.results ?? [])
-                self?.updatePage(total: response?.totalPages ?? 0)
+                self?.updateUI(with: response?.data?.results ?? [])
+                self?.updatePage(total: response?.data?.total ?? 0)
             case let .failure(error):
                 self?.error.onNext(error.localizedDescription)
                 self?.isDataLoading.onNext(false)
@@ -116,7 +116,7 @@ private extension MoviesViewModel {
                     case let .success(data):
                         let response: MoviesResponse? = data.parse()
                         self.isSearchingMode = true
-                        self.searchResultList = response?.results ?? []
+                        self.searchResultList = response?.data?.results ?? []
                         self.reloadFields.onNext(.all)
                         self.isSearchLoading.onNext(false)
                     case let .failure(error):

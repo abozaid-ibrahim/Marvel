@@ -22,6 +22,7 @@ final class HTTPClient: ApiClient {
             }
             guard let httpResponse = response as? HTTPURLResponse,
                 (200 ... 299).contains(httpResponse.statusCode) else {
+                log("Response is not valid", level: .error)
                 completion(.failure(.outOfRange))
                 return
             }

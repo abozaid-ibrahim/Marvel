@@ -8,7 +8,7 @@
 
 import Foundation
 enum LoggingLevels {
-    var isEnabled: Bool { return false }
+    var isEnabled: Bool { return true }
     case info, error
     var value: String {
         switch self {

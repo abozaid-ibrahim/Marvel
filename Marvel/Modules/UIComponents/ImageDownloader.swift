@@ -46,7 +46,7 @@ extension UIImageView {
 
     @discardableResult
     func setImage(with path: String, size: Size = .thumbnail) -> Disposable? {
-        guard let url = URL(string: "\(APIConstants.imageBaseUrl)\(size.rawValue)\(path)") else { return nil }
+        guard let url = URL(string: path) else { return nil }
         return ImageDownloader().downloadImageWith(url: url, completion: { [weak self] image in
             DispatchQueue.main.async {
                 self?.image = image

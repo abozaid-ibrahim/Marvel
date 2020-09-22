@@ -18,7 +18,7 @@ final class MoviesListViewModelTests: XCTestCase {
     }
 
     func testLoadingDataFromAPIClient() throws {
-        let viewModel = MoviesViewModel(apiClient: MockedSuccessApi())
+        let viewModel = HeroesViewModel(apiClient: MockedSuccessApi())
         let schedular = TestScheduler(initialClock: 0)
         let reloadObserver = schedular.createObserver(CollectionReload.self)
         viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
@@ -31,7 +31,7 @@ final class MoviesListViewModelTests: XCTestCase {
     func testLoadingMultiplePages() throws {
         let schedular = TestScheduler(initialClock: 0)
         let reloadObserver = schedular.createObserver(CollectionReload.self)
-        let viewModel = MoviesViewModel(apiClient: MockedSuccessApi())
+        let viewModel = HeroesViewModel(apiClient: MockedSuccessApi())
         viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
 
         schedular.scheduleAt(1, action: { viewModel.loadData() })
@@ -63,7 +63,7 @@ final class MockedSuccessApi: ApiClient {
                           popularity: 0,
                           voteCount: 1,
                           voteAverage: 3.2)
-        let response = MoviesResponse(page: 1,
+        let response = HeroesResponse(page: 1,
                                       results: .init(repeating: movie, count: 10),
                                       totalPages: 3,
                                       totalResults: 30)

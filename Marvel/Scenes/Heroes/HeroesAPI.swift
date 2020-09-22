@@ -21,7 +21,7 @@ extension MovieApi: RequestBuilder {
     var path: String {
         switch self {
         case .nowPlaying:
-            return "movie/now_playing"
+            return "v1/public/characters"
         case .search:
             return "search/movie"
         }
@@ -41,8 +41,10 @@ extension MovieApi: RequestBuilder {
             return ["api_key": APIConstants.apiToken,
                     "query": query]
         case let .nowPlaying(page):
-            return ["api_key": APIConstants.apiToken,
-                    "page": page]
+            let value = APIConstants.api
+            return ["apikey": APIConstants.publicKey,
+                    "ts": value.ts,
+                    "hash": value.hash]
         }
     }
 
@@ -55,8 +57,7 @@ extension MovieApi: RequestBuilder {
         urlComponents?.queryItems = items
         var request = URLRequest(url: urlComponents!.url!, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 30)
         request.httpMethod = method.rawValue
+        log(request, level: .info)
         return request
     }
-
-   
 }
