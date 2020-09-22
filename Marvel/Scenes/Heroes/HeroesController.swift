@@ -10,7 +10,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-final class MoviesController: UICollectionViewController {
+final class HeroesController: UICollectionViewController {
     private let viewModel: HeroesViewModelType
     private let disposeBag = DisposeBag()
 
@@ -36,7 +36,7 @@ final class MoviesController: UICollectionViewController {
 
 // MARK: - setup
 
-private extension MoviesController {
+private extension HeroesController {
     func show(error: String) {
         let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Str.cancel, style: .cancel, handler: nil))
@@ -68,7 +68,7 @@ private extension MoviesController {
 
     func setupCollection() {
         title = Str.albumsTitle
-        collectionView.register(MovieCollectionCell.self)
+        collectionView.register(HeroCollectionCell.self)
         collectionView.register(ActivityIndicatorFooterView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                                 withReuseIdentifier: ActivityIndicatorFooterView.id)
@@ -93,7 +93,7 @@ private extension MoviesController {
 
 // MARK: - UISearchResultsUpdating
 
-extension MoviesController: UISearchResultsUpdating {
+extension HeroesController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard searchController.isActive else {
             viewModel.searchCanceled()
@@ -106,13 +106,13 @@ extension MoviesController: UISearchResultsUpdating {
 
 // MARK: - UICollectionViewDataSource
 
-extension MoviesController {
+extension HeroesController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return movies.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionCell.identifier, for: indexPath) as! MovieCollectionCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HeroCollectionCell.identifier, for: indexPath) as! HeroCollectionCell
         cell.setData(with: movies[indexPath.row])
         return cell
     }
@@ -130,13 +130,13 @@ extension MoviesController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        AppNavigator.shared.push(.movieDetails(movies[indexPath.row]))
+//        AppNavigator.shared.push(.movieDetails(movies[indexPath.row]))
     }
 }
 
 // MARK: - UICollectionViewDataSourcePrefetching
 
-extension MoviesController: UICollectionViewDataSourcePrefetching {
+extension HeroesController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         viewModel.prefetchItemsAt(prefetch: true, indexPaths: indexPaths)
     }

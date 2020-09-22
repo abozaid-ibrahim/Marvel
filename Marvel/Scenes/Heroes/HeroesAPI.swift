@@ -1,5 +1,5 @@
 //
-//  MovieApi.swift
+//  HeroesAPI.swift
 //  Marvel
 //
 //  Created by abuzeid on 22.09.20.
@@ -8,12 +8,12 @@
 
 import Foundation
 
-enum MovieApi {
+enum HeroesAPI {
     case nowPlaying(page: Int)
     case search(String)
 }
 
-extension MovieApi: RequestBuilder {
+extension HeroesAPI: RequestBuilder {
     var baseURL: URL {
         return URL(string: APIConstants.baseURL)!
     }

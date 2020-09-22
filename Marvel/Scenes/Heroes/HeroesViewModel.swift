@@ -1,5 +1,5 @@
 //
-//  MoviesViewModel.swift
+//  HeroesViewModel.swift
 //  Marvel
 //
 //  Created by abuzeid on 22.09.20.
@@ -26,7 +26,7 @@ protocol HeroesViewModelType {
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath])
 }
 
-final class MoviesViewModel: HeroesViewModelType {
+final class HeroesViewModel: HeroesViewModelType {
     let error = PublishSubject<String>()
     let searchFor = PublishSubject<String>()
     let isDataLoading = PublishSubject<Bool>()
@@ -60,11 +60,11 @@ final class MoviesViewModel: HeroesViewModelType {
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
-        let apiEndpoint = MovieApi.nowPlaying(page: page.currentPage)
+        let apiEndpoint = HeroesAPI.nowPlaying(page: page.currentPage)
         apiClient.getData(of: apiEndpoint) { [weak self] result in
             switch result {
             case let .success(data):
-                let response: MoviesResponse? = data.parse()
+                let response: HeroesResponse? = data.parse()
                 self?.updateUI(with: response?.data?.results ?? [])
                 self?.updatePage(total: response?.data?.total ?? 0)
             case let .failure(error):
@@ -84,7 +84,7 @@ final class MoviesViewModel: HeroesViewModelType {
 
 // MARK: private
 
-private extension MoviesViewModel {
+private extension HeroesViewModel {
     func updatePage(total: Int) {
         page.currentPage += 1
         page.isFetchingData = false
@@ -110,11 +110,11 @@ private extension MoviesViewModel {
             .debounce(.milliseconds(400), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] text in
                 self.isSearchLoading.onNext(true)
-                self.apiClient.getData(of: MovieApi.search(text)) { [weak self] result in
+                self.apiClient.getData(of: HeroesAPI.search(text)) { [weak self] result in
                     guard let self = self else { return }
                     switch result {
                     case let .success(data):
-                        let response: MoviesResponse? = data.parse()
+                        let response: HeroesResponse? = data.parse()
                         self.isSearchingMode = true
                         self.searchResultList = response?.data?.results ?? []
                         self.reloadFields.onNext(.all)

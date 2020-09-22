@@ -10,20 +10,23 @@ import Foundation
 import UIKit
 
 enum Destination {
-    case movies
-    case movieDetails(Movie)
+    case feedPage
+    case heroesList
+    case heroFeed(Movie)
     var controller: UIViewController {
         switch self {
-        case .movies:
+        case .feedPage:
+            return FeedContainerController()
+        case .heroesList:
             return getMoviesController()
-        case let .movieDetails(movie):
-            return getMovieDetailsController(movie: movie)
+        case .heroFeed:
+            return getMoviesController()
         }
     }
 }
 
 extension Destination {
     func getMoviesController() -> UIViewController {
-        return MoviesController(viewModel: HeroesViewModel())
+        return HeroesController(viewModel: HeroesViewModel())
     }
 }

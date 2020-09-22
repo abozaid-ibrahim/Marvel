@@ -27,13 +27,13 @@ final class RecipesTableController: UITableViewController {
 //        title = Str.appName
         tableView.register(UINib(nibName: RecipeTableCell.identifier, bundle: nil), forCellReuseIdentifier: RecipeTableCell.identifier)
         tableView.rowHeight = 90
-        viewModel.reloadField.subscribe { [weak self] row in
-            if case let TableReload.row(position) = row {
-                self?.tableView.reloadRows(at: [IndexPath(row: position, section: 0)], with: .none)
-            } else if case TableReload.all = row {
-                self?.tableView.reloadData()
-            }
-        }
+//        viewModel.reloadField.subscribe { [weak self] row in
+//            if case let TableReload.row(position) = row {
+//                self?.tableView.reloadRows(at: [IndexPath(row: position, section: 0)], with: .none)
+//            } else if case TableReload.all = row {
+//                self?.tableView.reloadData()
+//            }
+//        }
         viewModel.loadRecipes()
     }
 
@@ -51,7 +51,5 @@ final class RecipesTableController: UITableViewController {
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        AppNavigator.shared.push(.recipeDetails(recipesList[indexPath.row]))
-    }
+   
 }

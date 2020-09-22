@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class MovieCollectionCell: UICollectionViewCell {
+final class HeroCollectionCell: UICollectionViewCell {
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var titleLabel: UILabel!
     private var imageLoader: Disposable?
