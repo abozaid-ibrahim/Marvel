@@ -9,18 +9,23 @@
 import UIKit
 
 final class HeroCollectionCell: UICollectionViewCell {
-    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private var heroImageView: UIImageView!
+    @IBOutlet private var selectionBorderView: UIView!
     @IBOutlet private var titleLabel: UILabel!
     private var imageLoader: Disposable?
 
     func setData(with hero: Hero) {
-        imageLoader = imageView.setImage(with: hero.thumbnail.photo)
+        imageLoader = heroImageView.setImage(with: hero.thumbnail.photo)
         titleLabel.text = hero.name
     }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        contentView.cornerRadius = 12
+        set(isSelected: false)
+    }
+
+    func set(isSelected: Bool) {
+        selectionBorderView.backgroundColor = isSelected ? .purple : .blue
     }
 
     override func prepareForReuse() {

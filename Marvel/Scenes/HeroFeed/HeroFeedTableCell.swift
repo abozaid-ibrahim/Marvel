@@ -9,27 +9,13 @@
 import UIKit
 
 final class HeroFeedTableCell: UITableViewCell {
-    @IBOutlet private var nameLabel: UILabel!
+    @IBOutlet private var titleLabel: UILabel!
     @IBOutlet private var comicImageView: UIImageView!
-    @IBOutlet private var headlineLabel: UILabel!
-    @IBOutlet private var ratingBar: RatingBar!
-    @IBOutlet private var favouriteButton: UIButton!
-    private var ratingChanged: RatingValueChanged?
+    @IBOutlet private var dateLabel: UILabel!
 
     func setData(of comic: FeedResult) {
-//            favouriteChanged = onFavourite
-//            ratingChanged = rating
-//            ratingBar.rating = CGFloat(recipe.averageRating)
-//            nameLabel.text = showDetails ? recipe.headline : recipe.name
-//            headlineLabel.text = showDetails ? recipe.recipesListResponseDescription : recipe.headline
-//            let imageName = recipe.isFavourite ? "heart" : "heart_off"
-//            favouriteButton.setImage(UIImage(named: imageName), for: .normal)
-//            ratingBar.ratingValueChanged = rating
+        titleLabel.text = comic.title
+        dateLabel.text = comic.modified
         comicImageView.setImage(with: comic.thumbnail.photo)
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        ratingChanged = nil
     }
 }

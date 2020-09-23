@@ -6,21 +6,25 @@
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 
-import UIKit
 import RxSwift
+import UIKit
 
 final class FeedContainerController: UIViewController {
     @IBOutlet private var heroesListContainer: UIView!
     @IBOutlet private var heroFeedContainer: UIView!
     @IBOutlet private var heroesListHeight: NSLayoutConstraint!
-//TODO: optimize data flow between feed, and heroes
+    
+    // TODO: optimize data flow between feed, and heroes
     lazy var heroes: HeroesController = {
         let viewModel = HeroesViewModel()
-        let controller = HeroesController(viewModel: viewModel)
-        viewModel.selectHero.bind(to: self.viewModel.selectHeroById).disposed(by: controller.disposeBag)
+        let controller = HeroesController(viewModel: viewModel,height: heroesListHeight.constant)
+        viewModel.selectHero
+            .bind(to: self.viewModel.selectHeroById)
+            .disposed(by: controller.disposeBag)
         return controller
     }()
-  let viewModel = HeroFeedViewModel()
+
+    private let viewModel = HeroFeedViewModel()
     lazy var feed: HeroFeedTableController = {
         let controller = HeroFeedTableController(viewModel: viewModel)
         return controller
@@ -28,6 +32,7 @@ final class FeedContainerController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = Str.discover
         addHeroes()
         addFeed()
     }

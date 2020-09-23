@@ -12,10 +12,12 @@ import UIKit
 
 final class HeroesController: UICollectionViewController {
     private let viewModel: HeroesViewModelType
-     let disposeBag = DisposeBag()
+    private let height: CGFloat
+    let disposeBag = DisposeBag()
 
-    init(viewModel: HeroesViewModelType) {
+    init(viewModel: HeroesViewModelType, height: CGFloat = 0) {
         self.viewModel = viewModel
+        self.height = height
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
 
@@ -28,6 +30,11 @@ final class HeroesController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = .white
+//        collectionView.scrollIndicatorInsets = .zero
         setupSearchBar()
         setupCollection()
         bindToViewModel()
@@ -49,16 +56,14 @@ private extension HeroesController {
             .drive(onNext: collection(reload:))
             .disposed(by: disposeBag)
         viewModel.isDataLoading
-            .compactMap { $0 ? CGFloat(50) : CGFloat(0) }
+            .compactMap {[unowned self] in $0 ? CGFloat(self.height) : CGFloat(0) }
             .asDriver(onErrorJustReturn: 0)
             .drive(onNext: collectionView.updateFooterHeight(height:)).disposed(by: disposeBag)
 
         viewModel.error
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: show(error:)).disposed(by: disposeBag)
-        
-        
-        
+
         viewModel.loadData()
     }
 
@@ -70,12 +75,11 @@ private extension HeroesController {
     }
 
     func setupCollection() {
-        title = Str.albumsTitle
         collectionView.register(HeroCollectionCell.self)
         collectionView.register(ActivityIndicatorFooterView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                                 withReuseIdentifier: ActivityIndicatorFooterView.id)
-        collectionView.setCell(size: .with(width: 100, height: 100))
+        collectionView.setCell(size: .with(width: height - 20, height: height))
         collectionView.prefetchDataSource = self
     }
 
@@ -133,8 +137,16 @@ extension HeroesController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.selectHero.onNext(self.heroesList[indexPath.row].id)
-        
+        viewModel.selectHero.onNext(heroesList[indexPath.row].id)
+        guard let cell = collectionView.cellForItem(at: indexPath) as? HeroCollectionCell else { return }
+        cell.set(isSelected: true)
+        //TODO:add margin before item
+        collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? HeroCollectionCell else { return }
+        cell.set(isSelected: false)
     }
 }
 

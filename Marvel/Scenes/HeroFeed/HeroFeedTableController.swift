@@ -14,6 +14,7 @@ final class HeroFeedTableController: UITableViewController {
     private let viewModel: HeroFeedViewModelType
     private var comicsList: [FeedResult] { viewModel.dataList }
     private let disposeBag = DisposeBag()
+
     init(viewModel: HeroFeedViewModelType) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -27,8 +28,8 @@ final class HeroFeedTableController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(HeroFeedTableCell.self)
-        tableView.rowHeight = 500
-        tableView.estimatedRowHeight = 500
+        tableView.rowHeight = 600
+        tableView.estimatedRowHeight = UITableView.automaticDimension
         viewModel.reloadFields
             .asDriver(onErrorJustReturn: .all)
             .drive(onNext: { [weak self] row in
@@ -40,9 +41,11 @@ final class HeroFeedTableController: UITableViewController {
             })
             .disposed(by: disposeBag)
     }
+}
 
-    // MARK: - Table view data source
+// MARK: - Table view data source
 
+extension HeroFeedTableController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return comicsList.count
     }
