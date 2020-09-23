@@ -30,12 +30,12 @@ final class HeroesController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         view.backgroundColor = .white
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.backgroundColor = .white
 //        collectionView.scrollIndicatorInsets = .zero
-        setupSearchBar()
         setupCollection()
         bindToViewModel()
     }
@@ -55,8 +55,9 @@ private extension HeroesController {
             .asDriver(onErrorJustReturn: .all)
             .drive(onNext: collection(reload:))
             .disposed(by: disposeBag)
+
         viewModel.isDataLoading
-            .compactMap {[unowned self] in $0 ? CGFloat(self.height) : CGFloat(0) }
+            .compactMap { [unowned self] in $0 ? CGFloat(self.height) : CGFloat(0) }
             .asDriver(onErrorJustReturn: 0)
             .drive(onNext: collectionView.updateFooterHeight(height:)).disposed(by: disposeBag)
 
@@ -69,8 +70,13 @@ private extension HeroesController {
 
     func collection(reload: CollectionReload) {
         switch reload {
-        case .all: collectionView.reloadData()
-        case let .insertItems(paths): collectionView.insertItems(at: paths)
+        case .all:
+            collectionView.reloadData()
+            DispatchQueue.main.async {
+                self.collectionView(self.collectionView, didSelectItemAt: IndexPath(row: 0, section: 0))
+            }
+        case let .insertItems(paths):
+            collectionView.insertItems(at: paths)
         }
     }
 
@@ -83,32 +89,7 @@ private extension HeroesController {
         collectionView.prefetchDataSource = self
     }
 
-    func setupSearchBar() {
-        let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = Str.search
-        viewModel.isSearchLoading
-            .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [unowned searchController] in
-                searchController.searchBar.isLoading = $0
-            }).disposed(by: disposeBag)
-        navigationItem.searchController = searchController
-        definesPresentationContext = true
-    }
-}
-
-// MARK: - UISearchResultsUpdating
-
-extension HeroesController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        guard searchController.isActive else {
-            viewModel.searchCanceled()
-            return
-        }
-        guard let text = searchController.searchBar.text else { return }
-        viewModel.searchFor.onNext(text)
-    }
+    
 }
 
 // MARK: - UICollectionViewDataSource
@@ -140,7 +121,7 @@ extension HeroesController {
         viewModel.selectHero.onNext(heroesList[indexPath.row].id)
         guard let cell = collectionView.cellForItem(at: indexPath) as? HeroCollectionCell else { return }
         cell.set(isSelected: true)
-        //TODO:add margin before item
+        // TODO: add margin before item
         collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
     }
 

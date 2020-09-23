@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 extension Destination {
-    func getHeroCommicsTableController(characterId: String) -> UIViewController {
+    func getHeroFeedTableController() -> UIViewController {
         let viewModel = HeroFeedViewModel()
         
         return HeroFeedTableController(viewModel: viewModel)

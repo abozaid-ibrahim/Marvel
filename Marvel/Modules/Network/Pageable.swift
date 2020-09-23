@@ -8,12 +8,25 @@
 import Foundation
 
 final class Page {
-    let defaultPageIndex = 1
-    lazy var currentPage: Int = self.defaultPageIndex
-    var totalPages: Int = 5
+    let firstPageIndex = 0
+    let pageSize = 20
+    lazy var currentPage: Int = self.firstPageIndex
+    var totalItemsCount: Int = 5
     var isFetchingData = false
     var fetchedItemsCount = 0
     var shouldLoadMore: Bool {
-        (currentPage <= totalPages) && (!isFetchingData)
+        (fetchedItemsCount < totalItemsCount) && (!isFetchingData)
+    }
+
+    var offset: Int { currentPage * pageSize }
+    var isFirstPage: Bool {
+        return currentPage == firstPageIndex
+    }
+
+    func updateNewPage(total: Int, fetched: Int) {
+        currentPage += 1
+        isFetchingData = false
+        totalItemsCount = total
+        fetchedItemsCount = fetched
     }
 }

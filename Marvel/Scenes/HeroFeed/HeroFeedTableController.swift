@@ -14,10 +14,11 @@ final class HeroFeedTableController: UITableViewController {
     private let viewModel: HeroFeedViewModelType
     private var comicsList: [FeedResult] { viewModel.dataList }
     private let disposeBag = DisposeBag()
+    private var last = CGFloat(0)
 
     init(viewModel: HeroFeedViewModelType) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: .plain)
     }
 
     @available(*, unavailable)
@@ -25,11 +26,35 @@ final class HeroFeedTableController: UITableViewController {
         fatalError("Unsupported")
     }
 
+    // TODO: optimize data flow between feed, and heroes
+    lazy var heroes: HeroesController = {
+        let heroesViewModel = HeroesViewModel()
+        let controller = HeroesController(viewModel: heroesViewModel, height: 100)
+        heroesViewModel.selectHero
+            .bind(to: self.viewModel.selectHeroById)
+            .disposed(by: self.disposeBag)
+        return controller
+    }()
+
+    //
+    private var header: UIView {
+        let view = UIView(frame: .init(x: 0, y: 0, width: tableView.bounds.width, height: 100))
+//        self.addChild(heroes)
+        view.addSubview(heroes.view)
+        heroes.view.setConstrainsEqualToParentEdges()
+        view.backgroundColor = .red
+        return view
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = Str.discover
+        tableView.prefetchDataSource = self
         tableView.register(HeroFeedTableCell.self)
         tableView.rowHeight = 600
         tableView.estimatedRowHeight = UITableView.automaticDimension
+//        tableView.tableHeaderView = header
+
         viewModel.reloadFields
             .asDriver(onErrorJustReturn: .all)
             .drive(onNext: { [weak self] row in
@@ -54,5 +79,44 @@ extension HeroFeedTableController {
         let cell = tableView.dequeueReusableCell(withIdentifier: HeroFeedTableCell.identifier, for: indexPath) as! HeroFeedTableCell
         cell.setData(of: comicsList[indexPath.row])
         return cell
+    }
+
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return header
+    }
+
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 100
+    }
+
+//    override func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+//        if scrollView.contentOffset.y > last{
+//            last  = scrollView.contentOffset.y
+//            header.alpha = 0
+//        }else if scrollView.contentOffset.y < last{
+//            header.alpha = 1.0
+//        }
+//        print(">>>\(scrollView.contentOffset.y)")
+//      if scrollView.contentOffset.y < 0 {
+//        UIView.animate(withDuration: 0.25, animations: {
+//          self.tableView.contentInset.top = 0
+//        })
+//      } else if scrollView.contentOffset.y > header.frame.size.height {
+//        UIView.animate(withDuration: 0.25, animations: {
+//          self.tableView.contentInset.top = -1 * self.header.frame.size.height
+//        })
+//      }
+//    }
+}
+
+// MARK: - UITableViewDataSourcePrefetching
+
+extension HeroFeedTableController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        viewModel.prefetchItemsAt(prefetch: true, indexPaths: indexPaths)
+    }
+
+    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        viewModel.prefetchItemsAt(prefetch: false, indexPaths: indexPaths)
     }
 }

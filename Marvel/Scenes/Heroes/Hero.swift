@@ -29,15 +29,12 @@ struct Hero: Codable {
     let thumbnail: Thumbnail?
 
     let resourceURI: String?
-    let comics, series: Comics?
-    let stories: Stories?
-    let events: Comics?
-    let urls: [URLElement]?
+    let comics: Comics?
 
     enum CodingKeys: String, CodingKey {
         case id, name
         case resultDescription = "description"
-        case thumbnail, resourceURI, comics, series, stories, events, urls
+        case thumbnail, resourceURI, comics
     }
 }
 
@@ -68,29 +65,6 @@ struct ComicsItem: Codable {
 
 // MARK: - Stories
 
-struct Stories: Codable {
-    let available: Int?
-    let collectionURI: String?
-    let items: [StoriesItem]?
-    let returned: Int?
-}
-
-// MARK: - StoriesItem
-
-struct StoriesItem: Codable {
-    let resourceURI: String?
-    let name: String?
-    let type: ItemType?
-}
-
-enum ItemType: String, Codable {
-    case cover
-    case empty = ""
-    case interiorStory
-}
-
-// MARK: - Thumbnail
-
 struct Thumbnail: Codable {
     let path: String?
     let thumbnailExtension: Extension?
@@ -104,17 +78,4 @@ struct Thumbnail: Codable {
 enum Extension: String, Codable {
     case gif
     case jpg
-}
-
-// MARK: - URLElement
-
-struct URLElement: Codable {
-    let type: URLType?
-    let url: String?
-}
-
-enum URLType: String, Codable {
-    case comiclink
-    case detail
-    case wiki
 }

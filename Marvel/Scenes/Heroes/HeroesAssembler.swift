@@ -16,7 +16,7 @@ enum Destination {
     var controller: UIViewController {
         switch self {
         case .feedPage:
-            return FeedContainerController()
+            return getHeroFeedTableController()
         case .heroesList:
             return getHerosController()
         case .heroFeed:
