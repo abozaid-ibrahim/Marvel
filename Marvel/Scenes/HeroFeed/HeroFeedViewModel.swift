@@ -1,35 +1,34 @@
 //
-//  HeroesViewModel.swift
+//  HeroFeedViewModel.swift
 //  Marvel
 //
-//  Created by abuzeid on 22.09.20.
+//  Created by abuzeid on 23.09.20.
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 
 import Foundation
 import RxSwift
 
-enum CollectionReload: Equatable {
-    case all
-    case insertItems([IndexPath])
-}
+protocol HeroFeedViewModelType {
+    var dataList: [FeedResult] { get }
 
-protocol HeroesViewModelType {
-    var dataList: [Hero] { get }
+    var selectHeroById: PublishSubject<Int> { get }
     var error: PublishSubject<String> { get }
     var searchFor: PublishSubject<String> { get }
     var isDataLoading: PublishSubject<Bool> { get }
     var isSearchLoading: PublishSubject<Bool> { get }
     var reloadFields: PublishSubject<CollectionReload> { get }
-    var selectHero: PublishSubject<Int> { get }
     func searchCanceled()
     func loadData()
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath])
 }
 
-final class HeroesViewModel: HeroesViewModelType {
-    let selectHero = PublishSubject<Int>()
+final class HeroFeedViewModel: HeroFeedViewModelType {
+    var dataList: [FeedResult] = []
+    
+    let selectHeroById = PublishSubject<Int>()
 
+    private var characterId: Int!
     let error = PublishSubject<String>()
     let searchFor = PublishSubject<String>()
     let isDataLoading = PublishSubject<Bool>()
@@ -38,7 +37,6 @@ final class HeroesViewModel: HeroesViewModelType {
     private let apiClient: ApiClient
     private var page = Page()
     private var isSearchingMode = false
-    var dataList: [Hero] = []
 
     private(set) var reloadFields = PublishSubject<CollectionReload>()
 
@@ -53,16 +51,18 @@ final class HeroesViewModel: HeroesViewModelType {
     }
 
     func loadData() {
-        guard page.shouldLoadMore else {
+        guard let characterId = self.characterId,
+            page.shouldLoadMore else {
             return
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
-        let apiEndpoint = HeroesAPI.characters(page: page.currentPage)
+
+        let apiEndpoint = HeroesAPI.comics(characterId: characterId)
         apiClient.getData(of: apiEndpoint) { [weak self] result in
             switch result {
             case let .success(data):
-                let response: HeroesResponse? = data.parse()
+                let response: FeedResponse? = data.parse()
                 self?.updateUI(with: response?.data?.results ?? [])
                 self?.updatePage(total: response?.data?.total ?? 0)
             case let .failure(error):
@@ -82,7 +82,7 @@ final class HeroesViewModel: HeroesViewModelType {
 
 // MARK: private
 
-private extension HeroesViewModel {
+private extension HeroFeedViewModel {
     func updatePage(total: Int) {
         page.currentPage += 1
         page.isFetchingData = false
@@ -90,7 +90,7 @@ private extension HeroesViewModel {
         page.fetchedItemsCount = dataList.count
     }
 
-    func updateUI(with sessions: [Hero]) {
+    func updateUI(with sessions: [FeedResult]) {
         isDataLoading.onNext(false)
         let startRange = dataList.count
         dataList.append(contentsOf: sessions)
@@ -103,26 +103,25 @@ private extension HeroesViewModel {
     }
 
     func bindForSearch() {
-//        searchFor.distinctUntilChanged()
-//            .filter { !$0.isEmpty }
-//            .debounce(.milliseconds(400), scheduler: MainScheduler.instance)
-//            .subscribe(onNext: { [unowned self] text in
-//                self.isSearchLoading.onNext(true)
-//                self.apiClient.getData(of: HeroesAPI.search(text)) { [weak self] result in
-//                    guard let self = self else { return }
-//                    switch result {
-//                    case let .success(data):
-//                        let response: HeroesResponse? = data.parse()
-//                        self.isSearchingMode = true
-//                        self.searchResultList = response?.data?.results ?? []
-//                        self.reloadFields.onNext(.all)
-//                        self.isSearchLoading.onNext(false)
-//                    case let .failure(error):
-//                        self.error.onNext(error.localizedDescription)
-//                        self.isSearchLoading.onNext(false)
-//                    }
-//                }
-//
-//            }).disposed(by: disposeBag)
+        selectHeroById.distinctUntilChanged()
+            .debounce(.milliseconds(400), scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [unowned self] text in
+                self.isSearchLoading.onNext(true)
+                self.apiClient.getData(of: HeroesAPI.comics(characterId: text)) { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case let .success(data):
+                        let response: FeedResponse? = data.parse()
+                        self.isSearchingMode = true
+                        self.dataList = response?.data?.results ?? []
+                        self.reloadFields.onNext(.all)
+                        self.isSearchLoading.onNext(false)
+                    case let .failure(error):
+                        self.error.onNext(error.localizedDescription)
+                        self.isSearchLoading.onNext(false)
+                    }
+                }
+
+            }).disposed(by: disposeBag)
     }
 }

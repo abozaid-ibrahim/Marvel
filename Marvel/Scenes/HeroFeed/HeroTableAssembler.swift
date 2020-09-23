@@ -10,7 +10,9 @@ import Foundation
 import UIKit
 
 extension Destination {
-    func getRecipesListController() -> UIViewController {
-        return RecipesTableController(viewModel: RecipesListViewModel() )
+    func getHeroCommicsTableController(characterId: String) -> UIViewController {
+        let viewModel = HeroFeedViewModel()
+        
+        return HeroFeedTableController(viewModel: viewModel)
     }
 }

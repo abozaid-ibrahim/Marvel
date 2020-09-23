@@ -11,7 +11,7 @@ import RxSwift
 import RxTest
 import XCTest
 
-final class MoviesListViewModelTests: XCTestCase {
+final class HerosListViewModelTests: XCTestCase {
     private var disposeBag: DisposeBag!
     override func setUp() {
         disposeBag = DisposeBag()
@@ -53,7 +53,7 @@ final class MoviesListViewModelTests: XCTestCase {
 
 final class MockedSuccessApi: ApiClient {
     func getData(of request: RequestBuilder, completion: @escaping (Result<Data, NetworkError>) -> Void) {
-        let movie = Movie(posterPath: nil,
+        let Hero = Hero(posterPath: nil,
                           overview: nil,
                           releaseDate: nil,
                           id: 0,
@@ -64,7 +64,7 @@ final class MockedSuccessApi: ApiClient {
                           voteCount: 1,
                           voteAverage: 3.2)
         let response = HeroesResponse(page: 1,
-                                      results: .init(repeating: movie, count: 10),
+                                      results: .init(repeating: Hero, count: 10),
                                       totalPages: 3,
                                       totalResults: 30)
 

@@ -7,24 +7,40 @@
 //
 
 import UIKit
+import RxSwift
 
-class FeedContainerController: UIViewController {
+final class FeedContainerController: UIViewController {
+    @IBOutlet private var heroesListContainer: UIView!
+    @IBOutlet private var heroFeedContainer: UIView!
+    @IBOutlet private var heroesListHeight: NSLayoutConstraint!
+//TODO: optimize data flow between feed, and heroes
+    lazy var heroes: HeroesController = {
+        let viewModel = HeroesViewModel()
+        let controller = HeroesController(viewModel: viewModel)
+        viewModel.selectHero.bind(to: self.viewModel.selectHeroById).disposed(by: controller.disposeBag)
+        return controller
+    }()
+  let viewModel = HeroFeedViewModel()
+    lazy var feed: HeroFeedTableController = {
+        let controller = HeroFeedTableController(viewModel: viewModel)
+        return controller
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        addHeroes()
+        addFeed()
     }
 
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private func addHeroes() {
+        addChild(heroes)
+        heroesListContainer.addSubview(heroes.view)
+        heroes.view.setConstrainsEqualToParentEdges()
     }
-    */
 
+    private func addFeed() {
+        addChild(feed)
+        heroFeedContainer.addSubview(feed.view)
+        feed.view.setConstrainsEqualToParentEdges()
+    }
 }

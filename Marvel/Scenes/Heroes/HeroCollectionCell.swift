@@ -1,5 +1,5 @@
 //
-//  MovieCollectionCell.swift
+//  HeroCollectionCell.swift
 //  Marvel
 //
 //  Created by abuzeid on 22.09.20.
@@ -13,9 +13,9 @@ final class HeroCollectionCell: UICollectionViewCell {
     @IBOutlet private var titleLabel: UILabel!
     private var imageLoader: Disposable?
 
-    func setData(with movie: Movie) {
-        imageLoader = imageView.setImage(with: movie.photo)
-        titleLabel.text = movie.name
+    func setData(with hero: Hero) {
+        imageLoader = imageView.setImage(with: hero.thumbnail.photo)
+        titleLabel.text = hero.name
     }
 
     override func awakeFromNib() {

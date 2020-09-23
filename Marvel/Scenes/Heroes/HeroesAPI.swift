@@ -9,8 +9,8 @@
 import Foundation
 
 enum HeroesAPI {
-    case nowPlaying(page: Int)
-    case search(String)
+    case characters(page: Int)
+    case comics(characterId: Int)
 }
 
 extension HeroesAPI: RequestBuilder {
@@ -20,10 +20,10 @@ extension HeroesAPI: RequestBuilder {
 
     var path: String {
         switch self {
-        case .nowPlaying:
+        case .characters:
             return "v1/public/characters"
-        case .search:
-            return "search/movie"
+        case let .comics(id):
+            return "v1/public/characters/\(id)/comics"
         }
     }
 
@@ -36,15 +36,18 @@ extension HeroesAPI: RequestBuilder {
     }
 
     var parameters: [String: Any] {
+        let request = RequestAuth().api
         switch self {
-        case let .search(query):
-            return ["api_key": APIConstants.apiToken,
-                    "query": query]
-        case let .nowPlaying(page):
-            let value = APIConstants.api
+        case .comics:
+            return [
+                "apikey": APIConstants.publicKey,
+                "ts": request.ts,
+                "hash": request.hash,
+            ]
+        case let .characters(page):
             return ["apikey": APIConstants.publicKey,
-                    "ts": value.ts,
-                    "hash": value.hash]
+                    "ts": request.ts,
+                    "hash": request.hash]
         }
     }
 

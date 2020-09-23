@@ -18,13 +18,13 @@ struct HeroesResponse: Codable {
 
 struct DataClass: Codable {
     let offset, limit, total, count: Int?
-    let results: [Movie]?
+    let results: [Hero]?
 }
 
 // MARK: - Result
 
-struct Movie: Codable {
-    let id: Int?
+struct Hero: Codable {
+    let id: Int
     let name, resultDescription: String?
     let thumbnail: Thumbnail?
 
@@ -41,9 +41,9 @@ struct Movie: Codable {
     }
 }
 
-extension Movie {
+extension Optional where Wrapped == Thumbnail {
     var photo: String {
-        guard let thumb = thumbnail,
+        guard let thumb = self,
             let type = thumb.thumbnailExtension?.rawValue,
             let path = thumb.path else { return "" }
         return path + "." + type

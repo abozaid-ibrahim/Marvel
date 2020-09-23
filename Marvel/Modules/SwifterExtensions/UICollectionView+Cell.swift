@@ -15,8 +15,8 @@ extension UICollectionViewCell {
 }
 
 extension UICollectionView {
-    enum CollectionWidth {
-        case twoColumn
+    enum CollSize {
+        case with(width: CGFloat, height: CGFloat)
     }
 
     /// WARNING: you must set the reuse identifier as same as the nib file name.
@@ -25,18 +25,20 @@ extension UICollectionView {
         register(nib, forCellWithReuseIdentifier: T.identifier)
     }
 
-    func setCell(type: CollectionWidth, padding: CGFloat = CGFloat(16)) {
+    func setCell(size: CollSize, padding: CGFloat = CGFloat(8)) {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        if case .twoColumn = type {
-            let space = (self.bounds.width - (3 * padding)) / 2
-            let cellSize = CGSize(width: space, height: space)
+        layout.scrollDirection = .horizontal
+        switch size {
+        case let .with(width, height):
+            let cellSize = CGSize(width: width - padding, height: height - padding)
             layout.itemSize = cellSize
             layout.sectionInset = .init(top: padding, left: padding, bottom: padding, right: padding)
             layout.minimumInteritemSpacing = padding
             layout.minimumLineSpacing = padding
-            layout.footerReferenceSize = CGSize(width: space * 2, height: space / 2)
+            layout.footerReferenceSize = CGSize(width: width, height: height)
             setCollectionViewLayout(layout, animated: true)
+        @unknown default:
+            fatalError()
         }
     }
 
@@ -44,19 +46,5 @@ extension UICollectionView {
         guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return }
         layout.footerReferenceSize = CGSize(width: layout.footerReferenceSize.width, height: height)
         setCollectionViewLayout(layout, animated: false)
-    }
-}
-
-extension UITableView {
-    /// WARNING: you must set the reuse identifier as same as the nib file name.
-    func register<T: UITableViewCell>(_: T.Type) {
-        let nib = UINib(nibName: T.identifier, bundle: Bundle(for: T.self))
-        register(nib, forCellReuseIdentifier: T.identifier)
-    }
-}
-
-extension UITableViewCell {
-    static var identifier: String {
-        return String(describing: self)
     }
 }

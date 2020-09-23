@@ -47,7 +47,7 @@ This is to group app shared fils, like appDelegate, assets,...etc
 - include seperate modules, Networking, extensions...etc.
 
 ### Scenes
-This is for group of app scenes: movies view, and details view
+This is for group of app scenes: Heros view, and details view
 
 
 ## Add New Feature

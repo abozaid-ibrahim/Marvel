@@ -9,6 +9,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FeedContainerController" customModule="Marvel" customModuleProvider="target">
             <connections>
+                <outlet property="heroFeedContainer" destination="EVM-tD-zpT" id="nVq-3o-OsO"/>
+                <outlet property="heroesListContainer" destination="1NB-6y-KUs" id="kpS-4D-Vmz"/>
+                <outlet property="heroesListHeight" destination="yun-zs-4SH" id="QJK-3p-ZS3"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -21,14 +24,14 @@
                     <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1NB-6y-KUs" userLabel="herosListContainer">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="160"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="200" id="yun-zs-4SH"/>
+                                <constraint firstAttribute="height" constant="160" id="yun-zs-4SH"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EVM-tD-zpT" userLabel="feedcontainer">
-                            <rect key="frame" x="0.0" y="200" width="414" height="618"/>
+                            <rect key="frame" x="0.0" y="160" width="414" height="658"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         </view>
                     </subviews>

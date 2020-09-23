@@ -12,21 +12,21 @@ import UIKit
 enum Destination {
     case feedPage
     case heroesList
-    case heroFeed(Movie)
+    case heroFeed(Hero)
     var controller: UIViewController {
         switch self {
         case .feedPage:
             return FeedContainerController()
         case .heroesList:
-            return getMoviesController()
+            return getHerosController()
         case .heroFeed:
-            return getMoviesController()
+            return getHerosController()
         }
     }
 }
 
 extension Destination {
-    func getMoviesController() -> UIViewController {
+    func getHerosController() -> UIViewController {
         return HeroesController(viewModel: HeroesViewModel())
     }
 }

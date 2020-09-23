@@ -12,7 +12,7 @@ import UIKit
 
 final class HeroesController: UICollectionViewController {
     private let viewModel: HeroesViewModelType
-    private let disposeBag = DisposeBag()
+     let disposeBag = DisposeBag()
 
     init(viewModel: HeroesViewModelType) {
         self.viewModel = viewModel
@@ -24,7 +24,7 @@ final class HeroesController: UICollectionViewController {
         fatalError("Unsupported")
     }
 
-    private var movies: [Movie] { viewModel.dataList }
+    private var heroesList: [Hero] { viewModel.dataList }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,6 +56,9 @@ private extension HeroesController {
         viewModel.error
             .asDriver(onErrorJustReturn: "")
             .drive(onNext: show(error:)).disposed(by: disposeBag)
+        
+        
+        
         viewModel.loadData()
     }
 
@@ -72,7 +75,7 @@ private extension HeroesController {
         collectionView.register(ActivityIndicatorFooterView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                                 withReuseIdentifier: ActivityIndicatorFooterView.id)
-        collectionView.setCell(type: .twoColumn)
+        collectionView.setCell(size: .with(width: 100, height: 100))
         collectionView.prefetchDataSource = self
     }
 
@@ -108,12 +111,12 @@ extension HeroesController: UISearchResultsUpdating {
 
 extension HeroesController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return movies.count
+        return heroesList.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HeroCollectionCell.identifier, for: indexPath) as! HeroCollectionCell
-        cell.setData(with: movies[indexPath.row])
+        cell.setData(with: heroesList[indexPath.row])
         return cell
     }
 
@@ -130,7 +133,8 @@ extension HeroesController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        AppNavigator.shared.push(.movieDetails(movies[indexPath.row]))
+        viewModel.selectHero.onNext(self.heroesList[indexPath.row].id)
+        
     }
 }
 

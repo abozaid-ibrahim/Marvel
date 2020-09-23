@@ -9,7 +9,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="HeroCollectionCell" id="gTV-IL-0wX" customClass="MovieCollectionCell" customModule="Marvel" customModuleProvider="target">
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="HeroCollectionCell" id="gTV-IL-0wX" customClass="HeroCollectionCell" customModule="Marvel" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="293" height="266"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -20,7 +20,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="293" height="266"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qAo-e1-V0X">
-                                <rect key="frame" x="0.0" y="0.0" width="293" height="266"/>
+                                <rect key="frame" x="0.0" y="0.0" width="293" height="229.5"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c4I-tG-aEA">
                                 <rect key="frame" x="0.0" y="229.5" width="293" height="36.5"/>
@@ -36,6 +36,7 @@
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="EgG-Lf-GSe" secondAttribute="bottom" constant="8" id="4FR-S5-Uv6"/>
                                     <constraint firstAttribute="trailing" secondItem="EgG-Lf-GSe" secondAttribute="trailing" constant="8" id="Rl7-8w-Te7"/>
+                                    <constraint firstAttribute="height" constant="36.5" id="Yjw-H5-I1n"/>
                                     <constraint firstItem="EgG-Lf-GSe" firstAttribute="top" secondItem="c4I-tG-aEA" secondAttribute="top" constant="8" id="bYL-Re-afm"/>
                                     <constraint firstItem="EgG-Lf-GSe" firstAttribute="leading" secondItem="c4I-tG-aEA" secondAttribute="leading" constant="8" id="mep-MM-IwC"/>
                                 </constraints>
@@ -43,10 +44,10 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="c4I-tG-aEA" firstAttribute="top" secondItem="qAo-e1-V0X" secondAttribute="bottom" id="4e3-iJ-vSU"/>
                             <constraint firstAttribute="bottom" secondItem="c4I-tG-aEA" secondAttribute="bottom" id="9dw-rI-ePg"/>
                             <constraint firstAttribute="trailing" secondItem="qAo-e1-V0X" secondAttribute="trailing" id="EUm-FB-s5y"/>
                             <constraint firstAttribute="trailing" secondItem="c4I-tG-aEA" secondAttribute="trailing" id="QMe-ZA-KY7"/>
-                            <constraint firstAttribute="bottom" secondItem="qAo-e1-V0X" secondAttribute="bottom" id="XRV-1G-bUk"/>
                             <constraint firstItem="qAo-e1-V0X" firstAttribute="leading" secondItem="XDo-Gf-tcu" secondAttribute="leading" id="YvY-cw-t50"/>
                             <constraint firstItem="c4I-tG-aEA" firstAttribute="leading" secondItem="XDo-Gf-tcu" secondAttribute="leading" id="Z4A-ts-nLE"/>
                             <constraint firstItem="qAo-e1-V0X" firstAttribute="top" secondItem="XDo-Gf-tcu" secondAttribute="top" id="gxd-y9-UVV"/>
