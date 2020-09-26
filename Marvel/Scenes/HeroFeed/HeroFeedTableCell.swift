@@ -13,6 +13,11 @@ final class HeroFeedTableCell: UITableViewCell {
     @IBOutlet private var comicImageView: UIImageView!
     @IBOutlet private var dateLabel: UILabel!
 
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        selectionStyle = .none
+    }
+
     func setData(of comic: FeedResult) {
         titleLabel.text = comic.title
         dateLabel.text = comic.modified

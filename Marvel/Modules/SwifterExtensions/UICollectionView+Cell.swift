@@ -37,8 +37,6 @@ extension UICollectionView {
             layout.minimumLineSpacing = padding
             layout.footerReferenceSize = CGSize(width: width, height: height)
             setCollectionViewLayout(layout, animated: true)
-        @unknown default:
-            fatalError()
         }
     }
 

@@ -7,11 +7,11 @@
 //
 
 import Foundation
+import RxCocoa
 import RxSwift
 
 protocol HeroFeedViewModelType {
     var dataList: [FeedResult] { get }
-
     var selectHeroById: PublishSubject<Int> { get }
     var error: PublishSubject<String> { get }
     var isDataLoading: PublishSubject<Bool> { get }
@@ -22,7 +22,7 @@ protocol HeroFeedViewModelType {
 
 final class HeroFeedViewModel: HeroFeedViewModelType {
     var dataList: [FeedResult] = []
-
+    let debounceTimeInMilliSeconde = 300
     let selectHeroById = PublishSubject<Int>()
 
     private var characterId: Int!
@@ -36,7 +36,7 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
 
     init(apiClient: ApiClient = HTTPClient()) {
         self.apiClient = apiClient
-        bindForSearch()
+        bindForHeroSelection()
     }
 
     func loadData() {
@@ -75,21 +75,23 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
 private extension HeroFeedViewModel {
     func updateUI(with sessions: [FeedResult]) {
         isDataLoading.onNext(false)
-        let startRange = dataList.count
-        dataList.append(contentsOf: sessions)
         if page.isFirstPage {
+            dataList = sessions
             reloadFields.onNext(.all)
-        } else if dataList.count > startRange {
+        } else {
+            let startRange = dataList.count
+            dataList.append(contentsOf: sessions)
             let rows = (startRange ... dataList.count - 1).map { IndexPath(row: $0, section: 0) }
             reloadFields.onNext(.insertItems(rows))
         }
     }
 
-    func bindForSearch() {
+    func bindForHeroSelection() {
         selectHeroById.distinctUntilChanged()
-            .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
+            .debounce(.milliseconds(debounceTimeInMilliSeconde), scheduler: SharingScheduler.make())
             .subscribe(onNext: { [unowned self] id in
                 self.characterId = id
+                self.page = Page()
                 self.loadData()
             }).disposed(by: disposeBag)
     }

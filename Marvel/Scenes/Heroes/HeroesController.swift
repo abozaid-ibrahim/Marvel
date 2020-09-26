@@ -32,7 +32,6 @@ final class HeroesController: UICollectionViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .white
-        collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.backgroundColor = .white
 //        collectionView.scrollIndicatorInsets = .zero
@@ -44,12 +43,7 @@ final class HeroesController: UICollectionViewController {
 // MARK: - setup
 
 private extension HeroesController {
-    func show(error: String) {
-        let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: Str.cancel, style: .cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-
+    
     func bindToViewModel() {
         viewModel.reloadFields
             .asDriver(onErrorJustReturn: .all)
@@ -141,4 +135,13 @@ extension HeroesController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
         viewModel.prefetchItemsAt(prefetch: false, indexPaths: indexPaths)
     }
+}
+
+extension UIViewController{
+    func show(error: String) {
+        let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Str.cancel, style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+
 }

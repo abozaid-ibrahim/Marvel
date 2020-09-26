@@ -12,14 +12,6 @@ final class MarvelUITests: XCTestCase {
     func testOpenDetailsView() throws {
         let app = XCUIApplication()
         app.launch()
-        app.collectionViews
-            .children(matching: .cell)
-            .element(boundBy: 0)
-            .children(matching: .other)
-            .element
-            .children(matching: .other)
-            .element
-            .tap()
-        XCTAssertTrue(app.otherElements["details_view"].exists)
+                      
     }
 }

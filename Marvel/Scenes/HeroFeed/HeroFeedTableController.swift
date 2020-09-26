@@ -18,7 +18,7 @@ final class HeroFeedTableController: UITableViewController {
 
     init(viewModel: HeroFeedViewModelType) {
         self.viewModel = viewModel
-        super.init(style: .plain)
+        super.init(style: .grouped)
     }
 
     @available(*, unavailable)
@@ -53,6 +53,8 @@ final class HeroFeedTableController: UITableViewController {
         tableView.register(HeroFeedTableCell.self)
         tableView.rowHeight = 600
         tableView.estimatedRowHeight = UITableView.automaticDimension
+        tableView.showsHorizontalScrollIndicator = false
+        tableView.showsVerticalScrollIndicator = false
 //        tableView.tableHeaderView = header
 
         viewModel.reloadFields
@@ -65,6 +67,9 @@ final class HeroFeedTableController: UITableViewController {
                 }
             })
             .disposed(by: disposeBag)
+        viewModel.error
+                   .asDriver(onErrorJustReturn: "")
+                   .drive(onNext: show(error:)).disposed(by: disposeBag)
     }
 }
 

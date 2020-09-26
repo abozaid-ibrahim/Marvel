@@ -24,19 +24,17 @@ struct FeedDataClass: Codable {
 // MARK: - Result
 
 struct FeedResult: Codable {
-    let id, digitalID: Int
+    let id : Int
     let title: String?
-    let issueNumber: Int?
-    let modified, isbn, upc, diamondCode: String?
+    let modified: String?
     let pageCount: Int?
     let thumbnail: Thumbnail?
     let images: [Thumbnail]?
 
     enum CodingKeys: String, CodingKey {
         case id
-        case digitalID = "digitalId"
-        case title, issueNumber
-        case modified, isbn, upc, diamondCode, pageCount, thumbnail, images
+        case title
+        case modified, pageCount, thumbnail, images
     }
 }
 

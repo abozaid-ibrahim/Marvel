@@ -53,10 +53,13 @@ final class HeroesViewModel: HeroesViewModelType {
             guard let self = self else { return }
             switch result {
             case let .success(data):
-                let response: HeroesResponse? = data.parse()
-                self.updateUI(with: response?.data?.results ?? [])
-                self.page.updateNewPage(total: response?.data?.total ?? 0,
-                                        fetched: self.dataList.count)
+                if let response: HeroesResponse = data.parse() {
+                    self.updateUI(with: response.data?.results ?? [])
+                    self.page.updateNewPage(total: response.data?.total ?? 0,
+                                            fetched: self.dataList.count)
+                } else {
+                    self.error.onNext(NetworkError.failedToParseData.localizedDescription)
+                }
             case let .failure(error):
                 self.error.onNext(error.localizedDescription)
                 self.isDataLoading.onNext(false)
