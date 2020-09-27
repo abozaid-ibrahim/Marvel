@@ -17,19 +17,22 @@ enum CollectionReload: Equatable {
 protocol HeroesViewModelType {
     var dataList: [Hero] { get }
     var error: PublishSubject<String> { get }
-    var searchFor: PublishSubject<String> { get }
     var isDataLoading: PublishSubject<Bool> { get }
     var reloadFields: PublishSubject<CollectionReload> { get }
     var selectHero: PublishSubject<Int> { get }
     func loadData()
+    // input
+    var currentSelectedIndex: Int { get set }
+
+    func selectHero(at index: Int)
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath])
 }
 
 final class HeroesViewModel: HeroesViewModelType {
+    var currentSelectedIndex: Int = -1
     let selectHero = PublishSubject<Int>()
 
     let error = PublishSubject<String>()
-    let searchFor = PublishSubject<String>()
     let isDataLoading = PublishSubject<Bool>()
     private let disposeBag = DisposeBag()
     private let apiClient: ApiClient
@@ -65,6 +68,11 @@ final class HeroesViewModel: HeroesViewModelType {
                 self.isDataLoading.onNext(false)
             }
         }
+    }
+
+    func selectHero(at index: Int) {
+        currentSelectedIndex = index
+        selectHero.onNext(dataList[index].id)
     }
 
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath]) {

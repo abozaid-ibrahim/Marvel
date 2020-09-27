@@ -8,9 +8,6 @@
 import Foundation
 
 struct HeroesResponse: Codable {
-    let code: Int?
-    let status, copyright, attributionText, attributionHTML: String?
-    let etag: String?
     let data: DataClass?
 }
 
@@ -28,13 +25,10 @@ struct Hero: Codable {
     let name, resultDescription: String?
     let thumbnail: Thumbnail?
 
-    let resourceURI: String?
-    let comics: Comics?
-
     enum CodingKeys: String, CodingKey {
         case id, name
         case resultDescription = "description"
-        case thumbnail, resourceURI, comics
+        case thumbnail
     }
 }
 
@@ -46,24 +40,6 @@ extension Optional where Wrapped == Thumbnail {
         return path + "." + type
     }
 }
-
-// MARK: - Comics
-
-struct Comics: Codable {
-    let available: Int?
-    let collectionURI: String?
-    let items: [ComicsItem]?
-    let returned: Int?
-}
-
-// MARK: - ComicsItem
-
-struct ComicsItem: Codable {
-    let resourceURI: String?
-    let name: String?
-}
-
-// MARK: - Stories
 
 struct Thumbnail: Codable {
     let path: String?

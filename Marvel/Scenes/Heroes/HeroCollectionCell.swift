@@ -13,18 +13,19 @@ final class HeroCollectionCell: UICollectionViewCell {
     @IBOutlet private var selectionBorderView: UIView!
     @IBOutlet private var titleLabel: UILabel!
     private var imageLoader: Disposable?
+    override var isSelected: Bool {
+        didSet {
+            set(isSelected: isSelected)
+        }
+    }
 
-    func setData(with hero: Hero) {
+    func setData(with hero: Hero, isSelected: Bool) {
         imageLoader = heroImageView.setImage(with: hero.thumbnail.photo)
         titleLabel.text = hero.name
+        set(isSelected: isSelected)
     }
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        set(isSelected: false)
-    }
-
-    func set(isSelected: Bool) {
+    private func set(isSelected: Bool) {
         selectionBorderView.backgroundColor = isSelected ? .purple : .blue
     }
 

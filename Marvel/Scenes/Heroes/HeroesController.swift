@@ -32,6 +32,8 @@ final class HeroesController: UICollectionViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .white
+        collectionView.allowsSelection = true
+        collectionView.allowsMultipleSelection = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.backgroundColor = .white
 //        collectionView.scrollIndicatorInsets = .zero
@@ -43,15 +45,19 @@ final class HeroesController: UICollectionViewController {
 // MARK: - setup
 
 private extension HeroesController {
-    
     func bindToViewModel() {
         viewModel.reloadFields
             .asDriver(onErrorJustReturn: .all)
             .drive(onNext: collection(reload:))
             .disposed(by: disposeBag)
 
+        viewModel.reloadFields.first()
+            .asDriver(onErrorJustReturn: .all)
+            .drive(onNext: { [weak self] _ in
+                self?.selectCell(at: IndexPath(row: 0, section: 0))
+            }).disposed(by: disposeBag)
         viewModel.isDataLoading
-            .compactMap { [unowned self] in $0 ? CGFloat(self.height) : CGFloat(0) }
+            .compactMap { $0 ? CGFloat(self.height) : CGFloat(0) }
             .asDriver(onErrorJustReturn: 0)
             .drive(onNext: collectionView.updateFooterHeight(height:)).disposed(by: disposeBag)
 
@@ -66,9 +72,7 @@ private extension HeroesController {
         switch reload {
         case .all:
             collectionView.reloadData()
-            DispatchQueue.main.async {
-                self.collectionView(self.collectionView, didSelectItemAt: IndexPath(row: 0, section: 0))
-            }
+
         case let .insertItems(paths):
             collectionView.insertItems(at: paths)
         }
@@ -79,23 +83,24 @@ private extension HeroesController {
         collectionView.register(ActivityIndicatorFooterView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                                 withReuseIdentifier: ActivityIndicatorFooterView.id)
-        collectionView.setCell(size: .with(width: height - 20, height: height))
+//        collectionView.setCell(size: .with(width: height - 20, height: height))
+        if let layout = collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .horizontal
+        }
         collectionView.prefetchDataSource = self
     }
-
-    
 }
 
 // MARK: - UICollectionViewDataSource
 
-extension HeroesController {
+extension HeroesController: UICollectionViewDelegateFlowLayout {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return heroesList.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HeroCollectionCell.identifier, for: indexPath) as! HeroCollectionCell
-        cell.setData(with: heroesList[indexPath.row])
+        cell.setData(with: heroesList[indexPath.row], isSelected: indexPath.row == viewModel.currentSelectedIndex)
         return cell
     }
 
@@ -112,16 +117,23 @@ extension HeroesController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.selectHero.onNext(heroesList[indexPath.row].id)
-        guard let cell = collectionView.cellForItem(at: indexPath) as? HeroCollectionCell else { return }
-        cell.set(isSelected: true)
-        // TODO: add margin before item
-        collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+        selectCell(at: indexPath)
     }
 
-    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: height - 20, height: height)
+    }
+
+    private func selectCell(at indexPath: IndexPath) {
+        if let prevSelectedCell = collectionView.cellForItem(at: IndexPath(row: viewModel.currentSelectedIndex, section: 0)) as? HeroCollectionCell {
+            prevSelectedCell.isSelected = false
+        }
+        viewModel.selectHero(at: indexPath.row)
+
         guard let cell = collectionView.cellForItem(at: indexPath) as? HeroCollectionCell else { return }
-        cell.set(isSelected: false)
+        cell.isSelected = true
+        // TODO: add margin before item
+        collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
     }
 }
 
@@ -137,11 +149,10 @@ extension HeroesController: UICollectionViewDataSourcePrefetching {
     }
 }
 
-extension UIViewController{
+extension UIViewController {
     func show(error: String) {
         let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Str.cancel, style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-
 }

@@ -55,8 +55,6 @@ final class HeroFeedTableController: UITableViewController {
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.showsHorizontalScrollIndicator = false
         tableView.showsVerticalScrollIndicator = false
-//        tableView.tableHeaderView = header
-
         viewModel.reloadFields
             .asDriver(onErrorJustReturn: .all)
             .drive(onNext: { [weak self] row in
