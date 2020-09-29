@@ -31,18 +31,18 @@ protocol HeroesViewModelType {
 final class HeroesViewModel: HeroesViewModelType {
     var currentSelectedIndex: Int = -1
     let selectHero = PublishSubject<Int>()
+    private var page = Page()
 
     let error = PublishSubject<String>()
     let isDataLoading = PublishSubject<Bool>()
     private let disposeBag = DisposeBag()
-    private let apiClient: ApiClient
-    private var page = Page()
+    private let heroesLoader: HeroesDataSource
     var dataList: [Hero] = []
 
     private(set) var reloadFields = PublishSubject<CollectionReload>()
 
-    init(apiClient: ApiClient = HTTPClient()) {
-        self.apiClient = apiClient
+    init(loader: HeroesDataSource = HeroesLoader()) {
+        heroesLoader = loader
     }
 
     func loadData() {
@@ -51,23 +51,18 @@ final class HeroesViewModel: HeroesViewModelType {
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
-        let apiEndpoint = HeroesAPI.characters(offset: page.offset)
-        apiClient.getData(of: apiEndpoint) { [weak self] result in
+        heroesLoader.loadHeroes(offset: page.offset, compeletion: { [weak self] data in
             guard let self = self else { return }
-            switch result {
-            case let .success(data):
-                if let response: HeroesResponse = data.parse() {
-                    self.updateUI(with: response.data?.results ?? [])
-                    self.page.updateNewPage(total: response.data?.total ?? 0,
-                                            fetched: self.dataList.count)
-                } else {
-                    self.error.onNext(NetworkError.failedToParseData.localizedDescription)
-                }
+            switch data {
+            case let .success(response):
+                self.updateUI(with: response.heroes)
+                self.page.updateNewPage(total: response.totalPages,
+                                        fetched: self.dataList.count)
             case let .failure(error):
                 self.error.onNext(error.localizedDescription)
-                self.isDataLoading.onNext(false)
             }
-        }
+            self.isDataLoading.onNext(false)
+        })
     }
 
     func selectHero(at index: Int) {
@@ -78,7 +73,7 @@ final class HeroesViewModel: HeroesViewModelType {
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath]) {
         guard let max = indexPaths.map({ $0.row }).max() else { return }
         if page.fetchedItemsCount <= (max + 1) {
-            prefetch ? loadData() : apiClient.cancel()
+//            prefetch ? loadData() : heroesLoader.cancel()
         }
     }
 }
@@ -92,9 +87,6 @@ private extension HeroesViewModel {
         dataList.append(contentsOf: sessions)
         if page.currentPage == page.firstPageIndex {
             reloadFields.onNext(.all)
-//            if let id = dataList.first?.id {
-//                selectHero.onNext(id)
-//            }
         } else if dataList.count > startRange {
             let rows = (startRange ... dataList.count - 1).map { IndexPath(row: $0, section: 0) }
             reloadFields.onNext(.insertItems(rows))

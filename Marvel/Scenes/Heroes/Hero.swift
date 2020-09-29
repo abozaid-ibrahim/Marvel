@@ -11,14 +11,10 @@ struct HeroesResponse: Codable {
     let data: DataClass?
 }
 
-// MARK: - DataClass
-
 struct DataClass: Codable {
     let offset, limit, total, count: Int?
     let results: [Hero]?
 }
-
-// MARK: - Result
 
 struct Hero: Codable {
     let id: Int
@@ -35,7 +31,7 @@ struct Hero: Codable {
 extension Optional where Wrapped == Thumbnail {
     var photo: String {
         guard let thumb = self,
-            let type = thumb.thumbnailExtension?.rawValue,
+            let type = thumb.thumbnailExtension,
             let path = thumb.path else { return "" }
         return path + "." + type
     }
@@ -43,15 +39,26 @@ extension Optional where Wrapped == Thumbnail {
 
 struct Thumbnail: Codable {
     let path: String?
-    let thumbnailExtension: Extension?
+    let thumbnailExtension: String?
 
     enum CodingKeys: String, CodingKey {
         case path
         case thumbnailExtension = "extension"
     }
+
+    static func instance(from photo: String) -> Thumbnail? {
+        let parts = photo.split(separator: ".").map { String($0) }.last
+        var path = photo
+        path.removeLast((parts?.count ?? 0) + 1)
+
+        return Thumbnail(path: path, thumbnailExtension: parts ?? "")
+    }
 }
 
-enum Extension: String, Codable {
-    case gif
-    case jpg
+extension Hero: CoreDataCachable {
+    var keyValued: [String: Any] {
+        return ["id": id,
+                "name": name ?? "",
+                "thumbnail": thumbnail.photo]
+    }
 }

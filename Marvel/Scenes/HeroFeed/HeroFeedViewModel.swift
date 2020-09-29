@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 
 protocol HeroFeedViewModelType {
-    var dataList: [FeedResult] { get }
+    var dataList: [Feed] { get }
     var selectHeroById: PublishSubject<Int> { get }
     var error: PublishSubject<String> { get }
     var isDataLoading: PublishSubject<Bool> { get }
@@ -21,7 +21,7 @@ protocol HeroFeedViewModelType {
 }
 
 final class HeroFeedViewModel: HeroFeedViewModelType {
-    var dataList: [FeedResult] = []
+    var dataList: [Feed] = []
     let debounceTimeInMilliSeconde = 300
     let selectHeroById = PublishSubject<Int>()
 
@@ -29,13 +29,13 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
     let error = PublishSubject<String>()
     let isDataLoading = PublishSubject<Bool>()
     private let disposeBag = DisposeBag()
-    private let apiClient: ApiClient
+    private let feedLoader: FeedDataSource
     private var page = Page()
 
     private(set) var reloadFields = PublishSubject<CollectionReload>()
 
-    init(apiClient: ApiClient = HTTPClient()) {
-        self.apiClient = apiClient
+    init(apiClient: FeedDataSource = FeedLoader()) {
+        self.feedLoader = apiClient
         bindForHeroSelection()
     }
 
@@ -46,26 +46,25 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
-        let apiEndpoint = HeroesAPI.comics(characterId: characterId, offset: page.offset)
-        apiClient.getData(of: apiEndpoint) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case let .success(data):
-                let response: FeedResponse? = data.parse()
-                self.updateUI(with: response?.data?.results ?? [])
-                self.page.updateNewPage(total: response?.data?.total ?? 0,
-                                        fetched: self.dataList.count)
-            case let .failure(error):
-                self.error.onNext(error.localizedDescription)
-                self.isDataLoading.onNext(false)
-            }
-        }
+        feedLoader.loadHeroesFeed(id: characterId, offset: page.offset, compeletion:  { [weak self] data in
+                  guard let self = self else { return }
+                  switch data {
+                  case let .success(response):
+                      self.updateUI(with: response.feed)
+                      self.page.updateNewPage(total: response.totalPages,
+                                              fetched: self.dataList.count)
+                  case let .failure(error):
+                      self.error.onNext(error.localizedDescription)
+                  }
+                  self.isDataLoading.onNext(false)
+              })
+       
     }
 
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath]) {
         guard let max = indexPaths.map({ $0.row }).max() else { return }
         if page.fetchedItemsCount <= (max + 1) {
-            prefetch ? loadData() : apiClient.cancel()
+            prefetch ? loadData() : ()
         }
     }
 }
@@ -73,7 +72,7 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
 // MARK: private
 
 private extension HeroFeedViewModel {
-    func updateUI(with sessions: [FeedResult]) {
+    func updateUI(with sessions: [Feed]) {
         isDataLoading.onNext(false)
         if page.isFirstPage {
             dataList = sessions

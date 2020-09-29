@@ -16,6 +16,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
             window?.overrideUserInterfaceStyle = .light
         
-        AppNavigator(window: window!)
+        AppNavigator.shared.set(window: window!)
     }
 }

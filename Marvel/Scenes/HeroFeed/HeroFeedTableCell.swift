@@ -18,7 +18,7 @@ final class HeroFeedTableCell: UITableViewCell {
         selectionStyle = .none
     }
 
-    func setData(of comic: FeedResult) {
+    func setData(of comic: Feed) {
         titleLabel.text = comic.title
         dateLabel.text = comic.modified
         comicImageView.setImage(with: comic.thumbnail.photo)

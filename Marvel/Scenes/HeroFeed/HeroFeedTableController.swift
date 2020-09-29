@@ -12,7 +12,7 @@ import UIKit
 
 final class HeroFeedTableController: UITableViewController {
     private let viewModel: HeroFeedViewModelType
-    private var comicsList: [FeedResult] { viewModel.dataList }
+    private var comicsList: [Feed] { viewModel.dataList }
     private let disposeBag = DisposeBag()
     private var last = CGFloat(0)
 
@@ -36,7 +36,6 @@ final class HeroFeedTableController: UITableViewController {
         return controller
     }()
 
-    //
     private var header: UIView {
         let view = UIView(frame: .init(x: 0, y: 0, width: tableView.bounds.width, height: 100))
 //        self.addChild(heroes)
@@ -92,24 +91,7 @@ extension HeroFeedTableController {
         return 100
     }
 
-//    override func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-//        if scrollView.contentOffset.y > last{
-//            last  = scrollView.contentOffset.y
-//            header.alpha = 0
-//        }else if scrollView.contentOffset.y < last{
-//            header.alpha = 1.0
-//        }
-//        print(">>>\(scrollView.contentOffset.y)")
-//      if scrollView.contentOffset.y < 0 {
-//        UIView.animate(withDuration: 0.25, animations: {
-//          self.tableView.contentInset.top = 0
-//        })
-//      } else if scrollView.contentOffset.y > header.frame.size.height {
-//        UIView.animate(withDuration: 0.25, animations: {
-//          self.tableView.contentInset.top = -1 * self.header.frame.size.height
-//        })
-//      }
-//    }
+
 }
 
 // MARK: - UITableViewDataSourcePrefetching

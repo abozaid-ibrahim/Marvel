@@ -23,7 +23,7 @@ final class HeroFeedViewModelTests: XCTestCase {
     func testLoadingHeroFeedInCaseMultipleSelectionQuickly() throws {
         let schedular = TestScheduler(initialClock: 0, resolution: 0.001)
         SharingScheduler.mock(scheduler: schedular) {
-            let viewModel = HeroFeedViewModel(apiClient: FeedMockedSuccessApi())
+            let viewModel = HeroFeedViewModel()
             let reloadObserver = schedular.createObserver(CollectionReload.self)
             viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
             schedular.scheduleAt(100, action: { viewModel.selectHeroById.onNext(1) })
@@ -43,7 +43,7 @@ final class HeroFeedViewModelTests: XCTestCase {
         let schedular = TestScheduler(initialClock: 0, resolution: 0.001)
         SharingScheduler.mock(scheduler: schedular) {
             let reloadObserver = schedular.createObserver(CollectionReload.self)
-            let viewModel = HeroFeedViewModel(apiClient: FeedMockedSuccessApi())
+            let viewModel = HeroFeedViewModel()
             viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
 
             schedular.scheduleAt(10, action: { viewModel.selectHeroById.onNext(1) })
@@ -64,7 +64,7 @@ final class HeroFeedViewModelTests: XCTestCase {
     func testPagesLoadingWithHeroChanging() throws {
         let schedular = TestScheduler(initialClock: 0, resolution: 0.001)
         SharingScheduler.mock(scheduler: schedular) {
-            let viewModel = HeroFeedViewModel(apiClient: FeedMockedSuccessApi())
+            let viewModel = HeroFeedViewModel()
             let reloadObserver = schedular.createObserver(CollectionReload.self)
             viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
             schedular.scheduleAt(100, action: { viewModel.selectHeroById.onNext(1) })
@@ -77,17 +77,21 @@ final class HeroFeedViewModelTests: XCTestCase {
             XCTAssertEqual(viewModel.dataList.count, 20)
         }
     }
-
+    func testCompostThumbnailFromString() throws {
+        let url  = "https://www.ggoogle.com/image/abu.png"
+        XCTAssertEqual(Thumbnail.instance(from: url).photo, url)
+    }
+    
     override func tearDown() {
         disposeBag = nil
     }
 }
 
 final class FeedMockedSuccessApi: ApiClient {
-    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, NetworkError>) -> Void) {
-        let feed = FeedResult(id: 1, title: nil, modified: nil, pageCount: nil, thumbnail: nil, images: [])
+    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void) {
+        let feed = Feed(id: 1, title: nil, modified: nil,  thumbnail: nil)
         let data = FeedDataClass(offset: 0, limit: 20, total: 60, count: 0, results: .init(repeating: feed, count: 20))
-        let response = FeedResponse(code: nil, status: nil, copyright: nil, attributionText: nil, attributionHTML: nil, etag: nil, data: data)
+        let response = FeedJsonResponse(data: data)
         completion(.success(try! JSONEncoder().encode(response)))
     }
 

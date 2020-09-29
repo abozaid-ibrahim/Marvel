@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 typealias DownloadImageCompletion = (UIImage?) -> Void
 protocol ImageDownloaderType {
-    func downloadImageWith(url: URL, completion: DownloadImageCompletion?) -> Disposable
+    func downloadImageWith(url: URL, completion: DownloadImageCompletion?) -> Disposable?
 }
 
 public protocol Disposable {
@@ -24,28 +24,37 @@ extension URLSessionDataTask: Disposable {
 }
 
 public final class ImageDownloader: ImageDownloaderType {
-    func downloadImageWith(url: URL, completion: DownloadImageCompletion? = nil) -> Disposable {
-        let dataTask = URLSession.shared.dataTask(with: url) { data, _, _ in
+    func downloadImageWith(url: URL, completion: DownloadImageCompletion? = nil) -> Disposable? {
+        if let data = cached(url: url.absoluteString) {
+            completion?(data)
+            return nil
+        }
+        let dataTask = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
             guard let data = data,
                 let image = UIImage(data: data) else {
                 completion?(nil)
                 return
             }
+            self?.cachImage(url: url.absoluteString, image: data)
             completion?(image)
         }
         dataTask.resume()
         return dataTask
     }
+
+    private func cachImage(url: String, image: Data) {
+        CoreDataHelper.shared.saveImage(url: url, data: image)
+    }
+
+    private func cached(url: String) -> UIImage? {
+        guard let data = CoreDataHelper.shared.getImage(url: url) else { return nil }
+        return UIImage(data: data)
+    }
 }
 
 extension UIImageView {
-    enum Size: String {
-        case thumbnail = "w342"
-        case original
-    }
-
     @discardableResult
-    func setImage(with path: String, size: Size = .thumbnail) -> Disposable? {
+    func setImage(with path: String) -> Disposable? {
         guard let url = URL(string: path) else { return nil }
         return ImageDownloader().downloadImageWith(url: url, completion: { [weak self] image in
             DispatchQueue.main.async {
