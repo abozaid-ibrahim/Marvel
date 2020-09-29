@@ -15,6 +15,7 @@ enum CollectionReload: Equatable {
 }
 
 protocol HeroesViewModelType {
+    // output
     var dataList: [Hero] { get }
     var error: PublishSubject<String> { get }
     var isDataLoading: PublishSubject<Bool> { get }
@@ -23,13 +24,12 @@ protocol HeroesViewModelType {
     func loadData()
     // input
     var currentSelectedIndex: Int { get set }
-
     func selectHero(at index: Int)
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath])
 }
 
 final class HeroesViewModel: HeroesViewModelType {
-    var currentSelectedIndex: Int = -1
+ var currentSelectedIndex: Int = -1
     let selectHero = PublishSubject<Int>()
     private var page = Page()
 
@@ -37,7 +37,7 @@ final class HeroesViewModel: HeroesViewModelType {
     let isDataLoading = PublishSubject<Bool>()
     private let disposeBag = DisposeBag()
     private let heroesLoader: HeroesDataSource
-    var dataList: [Hero] = []
+    private(set) var dataList: [Hero] = []
 
     private(set) var reloadFields = PublishSubject<CollectionReload>()
 
@@ -73,7 +73,7 @@ final class HeroesViewModel: HeroesViewModelType {
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath]) {
         guard let max = indexPaths.map({ $0.row }).max() else { return }
         if page.fetchedItemsCount <= (max + 1) {
-//            prefetch ? loadData() : heroesLoader.cancel()
+            prefetch ? loadData() : ()
         }
     }
 }

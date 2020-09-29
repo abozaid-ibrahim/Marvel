@@ -125,6 +125,7 @@ extension HeroesController: UICollectionViewDelegateFlowLayout {
     }
 
     private func selectCell(at indexPath: IndexPath) {
+        guard indexPath.row < heroesList.count else { return }
         if let prevSelectedCell = collectionView.cellForItem(at: IndexPath(row: viewModel.currentSelectedIndex, section: 0)) as? HeroCollectionCell {
             prevSelectedCell.isSelected = false
         }
