@@ -17,15 +17,27 @@ struct FeedDataClass: Codable {
 }
 
 struct Feed: Codable {
+    var pid: Int?
     let id: Int
     let title: String?
     let modified: String?
     let thumbnail: Thumbnail?
 }
 
+extension Feed {
+    init(_ oldValue: Feed, pid: Int) {
+        self.pid = pid
+        id = oldValue.id
+        title = oldValue.title
+        modified = oldValue.modified
+        thumbnail = oldValue.thumbnail
+    }
+}
+
 extension Feed: CoreDataCachable {
     var keyValued: [String: Any] {
         return ["id": id,
+                "pid": pid ?? 0,
                 "title": title ?? "",
                 "modified": modified ?? "",
                 "thumbnail": thumbnail.photo,

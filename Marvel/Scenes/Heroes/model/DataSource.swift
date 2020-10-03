@@ -14,10 +14,19 @@ protocol DataSource {
 
 extension DataSource {
     func shouldLoadRemotely(for key: UserDefaultsKeys) -> Bool {
-        guard let updateDate = UserDefaults.standard.object(forKey: key.rawValue) as? Date else {
-            return true
+        return false
+        guard let updateDate = UserDefaults.standard.object(forKey: key.rawValue) as? Date,
+            let callTimePlusDay = Calendar.current.date(byAdding: .hour, value: 24, to: updateDate) else {
+            return false
         }
-        let date = Date() - updateDate
-        return (date.hours >= 24) && Reachability.shared.hasInternet()
+        let remote = callTimePlusDay > Date() && Reachability.shared.hasInternet()
+
+        if remote {
+            DispatchQueue.global().async {
+                CoreDataHelper.shared.clearCache(for: .feed)
+                CoreDataHelper.shared.clearCache(for: .heroes)
+            }
+        }
+        return remote
     }
 }

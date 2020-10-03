@@ -18,14 +18,8 @@ struct DataClass: Codable {
 
 struct Hero: Codable {
     let id: Int
-    let name, resultDescription: String?
+    let name: String?
     let thumbnail: Thumbnail?
-
-    enum CodingKeys: String, CodingKey {
-        case id, name
-        case resultDescription = "description"
-        case thumbnail
-    }
 }
 
 extension Optional where Wrapped == Thumbnail {

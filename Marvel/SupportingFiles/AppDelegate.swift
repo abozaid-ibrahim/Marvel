@@ -21,6 +21,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        CoreDataHelper.shared.saveContext()
+        CoreDataHelper.shared.save(context: CoreDataHelper.shared.persistentContainer.viewContext)
     }
 }

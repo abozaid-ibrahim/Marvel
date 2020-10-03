@@ -41,7 +41,6 @@ final class HeroFeedTableController: UITableViewController {
 //        self.addChild(heroes)
         view.addSubview(heroes.view)
         heroes.view.setConstrainsEqualToParentEdges()
-        view.backgroundColor = .red
         return view
     }
 
@@ -50,7 +49,7 @@ final class HeroFeedTableController: UITableViewController {
         title = Str.discover
         tableView.prefetchDataSource = self
         tableView.register(HeroFeedTableCell.self)
-        tableView.rowHeight = 600
+        tableView.rowHeight = 700
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.showsHorizontalScrollIndicator = false
         tableView.showsVerticalScrollIndicator = false

@@ -36,15 +36,14 @@ final class CoreDataHelper {
         log("DB Directory: ", FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last ?? "Not Found!", level: .info)
     }
 
-    func saveContext() {
-        let context = persistentContainer.viewContext
+    func save(context: NSManagedObjectContext) {
         guard context.hasChanges else { return }
         do {
             try context.save()
         } catch {
-            // TODO: Replace this implementation with code to handle the error appropriately.
+            print(error) // TODO: Replace this implementation with code to handle the error appropriately.
             #if DEBUG
-                fatalError("Unresolved error \(error)")
+//                fatalError("Unresolved error \(error)")
             #endif
         }
     }

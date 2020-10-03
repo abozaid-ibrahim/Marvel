@@ -30,13 +30,10 @@ final class HeroesController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.backgroundColor = .white
-        collectionView.allowsSelection = true
         collectionView.allowsMultipleSelection = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.backgroundColor = .white
-//        collectionView.scrollIndicatorInsets = .zero
         setupCollection()
         bindToViewModel()
     }
@@ -59,11 +56,13 @@ private extension HeroesController {
         viewModel.isDataLoading
             .compactMap { $0 ? CGFloat(self.height) : CGFloat(0) }
             .asDriver(onErrorJustReturn: 0)
-            .drive(onNext: collectionView.updateFooterHeight(height:)).disposed(by: disposeBag)
+            .drive(onNext: collectionView.updateFooterHeight(height:))
+            .disposed(by: disposeBag)
 
         viewModel.error
             .asDriver(onErrorJustReturn: "")
-            .drive(onNext: show(error:)).disposed(by: disposeBag)
+            .drive(onNext: show(error:))
+            .disposed(by: disposeBag)
 
         viewModel.loadData()
     }
@@ -83,7 +82,6 @@ private extension HeroesController {
         collectionView.register(ActivityIndicatorFooterView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                                 withReuseIdentifier: ActivityIndicatorFooterView.id)
-//        collectionView.setCell(size: .with(width: height - 20, height: height))
         if let layout = collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .horizontal
         }
@@ -94,6 +92,12 @@ private extension HeroesController {
 // MARK: - UICollectionViewDataSource
 
 extension HeroesController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: height - 20, height: height)
+    }
+}
+
+extension HeroesController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return heroesList.count
     }
@@ -118,10 +122,6 @@ extension HeroesController: UICollectionViewDelegateFlowLayout {
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectCell(at: indexPath)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: height - 20, height: height)
     }
 
     private func selectCell(at indexPath: IndexPath) {

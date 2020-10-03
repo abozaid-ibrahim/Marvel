@@ -25,29 +25,38 @@ final class CoreDataTests: XCTestCase {
         CoreDataHelper.shared.clearCache(for: .heroes)
         XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .heroes).count, 0)
 
-        let heroes = [Hero(id: 1, name: "Abozaid", resultDescription: nil,
+        let heroes = [Hero(id: 1, name: "Abozaid", thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png")),
+                      Hero(id: 2, name: "Abozaid",
                            thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png")),
-                      Hero(id: 2, name: "Abozaid", resultDescription: nil,
-                           thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png")),
-                      Hero(id: 1, name: "Abozaid", resultDescription: nil,
+                      Hero(id: 3, name: "Abozaid",
                            thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png"))]
-        CoreDataHelper.shared.save(data: heroes, entity: .heroes)
-        print(CoreDataHelper.shared.load(offset: 0, entity: .heroes))
-        XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .heroes).count, 2)
+        let exp = expectation(description: "Tests")
+
+        CoreDataHelper.shared.save(data: heroes, entity: .heroes, onComplete: { _ in
+            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .heroes).count, 3)
+            exp.fulfill()
+        })
+
+        waitForExpectations(timeout: 0.1, handler: nil)
     }
 
     func test_DB_CRUD_forFeed() throws {
         CoreDataHelper.shared.clearCache(for: .feed)
         XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed).count, 0)
 
-        let feed = [Feed(id: 1, title: "Abozaid", modified: nil,
+        let feed = [Feed(pid: 1, id: 1, title: "Abozaid", modified: nil,
                          thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png")),
-                    Feed(id: 3, title: "Abozaid", modified: nil,
+                    Feed(pid: 1, id: 3, title: "Abozaid", modified: nil,
                          thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png")),
-                    Feed(id: 3, title: "Abozaid", modified: nil,
+                    Feed(pid: 2, id: 2, title: "Abozaid", modified: nil,
                          thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png"))]
-        CoreDataHelper.shared.save(data: feed, entity: .feed)
-        XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed).count, 2)
-        XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: NSPredicate(format: "id = %i", 1)).count, 1)
+        let exp = expectation(description: "af")
+        CoreDataHelper.shared.save(data: feed, entity: .feed, onComplete: { _ in
+            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed).count, 3)
+            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: NSPredicate(format: "pid = %i", 1)).count, 2)
+            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: NSPredicate(format: "pid = %i", 2)).count, 1)
+            exp.fulfill()
+        })
+        wait(for: [exp], timeout: 0.1)
     }
 }

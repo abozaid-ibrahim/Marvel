@@ -18,7 +18,7 @@ final class HeroesListViewModelTests: XCTestCase {
     }
 
     func testLoadingFromAPIClient() throws {
-        let viewModel = HeroesViewModel()
+        let viewModel = HeroesViewModel(loader: HeroesLoader(remoteLoader: MockedRemoteHeroesLoader()))
         let schedular = TestScheduler(initialClock: 0)
         let reloadObserver = schedular.createObserver(CollectionReload.self)
         viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
@@ -31,7 +31,7 @@ final class HeroesListViewModelTests: XCTestCase {
     func testLoadingMultiplePages() throws {
         let schedular = TestScheduler(initialClock: 0)
         let reloadObserver = schedular.createObserver(CollectionReload.self)
-        let viewModel = HeroesViewModel()
+        let viewModel = HeroesViewModel(loader: HeroesLoader(remoteLoader: MockedRemoteHeroesLoader()))
         viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
 
         schedular.scheduleAt(1, action: { viewModel.loadData() })
@@ -65,7 +65,7 @@ final class HeroesListViewModelTests: XCTestCase {
 
 final class HeroesMockedSuccessApi: ApiClient {
     func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void) {
-        let hero = Hero(id: 1, name: "Hello", resultDescription: nil, thumbnail: nil)
+        let hero = Hero(id: 1, name: "Hello", thumbnail: nil)
         let data = DataClass(offset: 0, limit: 20, total: 60, count: 0, results: .init(repeating: hero, count: 20))
         let response = HeroesResponse(data: data)
 
@@ -87,3 +87,5 @@ final class HeroesMockedFailureApi: ApiClient {
         // todo
     }
 }
+
+
