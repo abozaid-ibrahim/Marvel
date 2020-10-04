@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class RemoteFeedLoader: FeedDataSource {
+class RemoteFeedLoader: FeedDataSource {
     let apiClient: ApiClient
     init(apiClient: ApiClient = HTTPClient()) {
         self.apiClient = apiClient
@@ -16,7 +16,7 @@ final class RemoteFeedLoader: FeedDataSource {
 
     func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
         let apiEndpoint = HeroesAPI.comics(characterId: id, offset: offset)
-        apiClient.getData(of: apiEndpoint) {  result in
+        apiClient.getData(of: apiEndpoint) { result in
             switch result {
             case let .success(data):
                 if let response: FeedJsonResponse = data.parse(),
@@ -30,6 +30,4 @@ final class RemoteFeedLoader: FeedDataSource {
             }
         }
     }
-
-   
 }

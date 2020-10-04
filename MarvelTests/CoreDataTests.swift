@@ -13,7 +13,7 @@ final class CoreDataTests: XCTestCase {
     func testSaveAndRetrieveImageFromDB() throws {
         let url = "http://www.google.com/image.png"
         guard let imageData = UIImage(systemName: "folder")?.pngData() else {
-            XCTFail()
+            XCTFail("Falied to convert image to data")
             return
         }
 
@@ -51,8 +51,8 @@ final class CoreDataTests: XCTestCase {
         let exp = expectation(description: "af")
         CoreDataHelper.shared.save(data: feed, entity: .feed, onComplete: { _ in
             XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed).count, 3)
-            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: NSPredicate(format: "pid = %i", 1)).count, 2)
-            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: NSPredicate(format: "pid = %i", 2)).count, 1)
+            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: .feed(pid:1)).count, 2)
+            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: .feed(pid:2)).count, 1)
             exp.fulfill()
         })
         wait(for: [exp], timeout: 0.1)

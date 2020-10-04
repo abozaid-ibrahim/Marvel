@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class RemoteHeroesLoader: HeroesDataSource {
+ class RemoteHeroesLoader: HeroesDataSource {
     let apiClient: ApiClient
     init(apiClient: ApiClient = HTTPClient()) {
         self.apiClient = apiClient
@@ -30,6 +30,4 @@ final class RemoteHeroesLoader: HeroesDataSource {
             }
         }
     }
-
-   
 }

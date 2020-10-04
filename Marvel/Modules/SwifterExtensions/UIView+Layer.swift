@@ -44,7 +44,7 @@ public extension UIView {
             layer.borderWidth = newValue
         }
     }
-    
+
     /// SwifterSwift: Shadow color of view; also inspectable from Storyboard.
     @IBInspectable var layerShadowColor: UIColor? {
         get {

@@ -40,7 +40,6 @@ extension Feed: CoreDataCachable {
                 "pid": pid ?? 0,
                 "title": title ?? "",
                 "modified": modified ?? "",
-                "thumbnail": thumbnail.photo,
-        ]
+                "thumbnail": thumbnail.photo]
     }
 }

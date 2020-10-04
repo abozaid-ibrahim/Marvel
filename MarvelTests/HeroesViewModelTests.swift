@@ -11,33 +11,43 @@ import RxSwift
 import RxTest
 import XCTest
 
-final class HeroesListViewModelTests: XCTestCase {
+final class HeroesViewModelTests: XCTestCase {
     private var disposeBag: DisposeBag!
+    private var viewModel: HeroesViewModel!
     override func setUp() {
+        let loader = HeroesLoader(remoteLoader: RemoteHeroesLoader(apiClient: MockedHeroesSuccessApi()), reachable: HasReachability())
+        viewModel = HeroesViewModel(loader: loader)
         disposeBag = DisposeBag()
     }
 
+    private func setShouldLoadRemotely(_ remote: Bool) {
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.heroesApiLastUpdated(offset: 0).key)
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.heroesApiLastUpdated(offset: 20).key)
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.heroesApiLastUpdated(offset: 40).key)
+        UserDefaults.standard.synchronize()
+    }
+
     func testLoadingFromAPIClient() throws {
-        let viewModel = HeroesViewModel(loader: HeroesLoader(remoteLoader: MockedRemoteHeroesLoader()))
+        setShouldLoadRemotely(true)
         let schedular = TestScheduler(initialClock: 0)
         let reloadObserver = schedular.createObserver(CollectionReload.self)
         viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
-        schedular.scheduleAt(0, action: { viewModel.loadData() })
+        schedular.scheduleAt(0, action: { self.viewModel.loadData() })
         schedular.start()
         XCTAssertEqual(reloadObserver.events, [.next(0, .all)])
         XCTAssertEqual(viewModel.dataList.count, 20)
     }
 
     func testLoadingMultiplePages() throws {
+        setShouldLoadRemotely(true)
         let schedular = TestScheduler(initialClock: 0)
         let reloadObserver = schedular.createObserver(CollectionReload.self)
-        let viewModel = HeroesViewModel(loader: HeroesLoader(remoteLoader: MockedRemoteHeroesLoader()))
         viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
 
-        schedular.scheduleAt(1, action: { viewModel.loadData() })
-        schedular.scheduleAt(2, action: { viewModel.prefetchItemsAt(prefetch: true, indexPaths: [.init(row: 19, section: 0)]) })
-        schedular.scheduleAt(3, action: { viewModel.prefetchItemsAt(prefetch: true, indexPaths: [.init(row: 39, section: 0)]) })
-        schedular.scheduleAt(4, action: { viewModel.prefetchItemsAt(prefetch: true, indexPaths: [.init(row: 59, section: 0)]) })
+        schedular.scheduleAt(1, action: { self.viewModel.loadData() })
+        schedular.scheduleAt(2, action: { self.viewModel.prefetchItemsAt(prefetch: true, indexPaths: [.init(row: 19, section: 0)]) })
+        schedular.scheduleAt(3, action: { self.viewModel.prefetchItemsAt(prefetch: true, indexPaths: [.init(row: 39, section: 0)]) })
+        schedular.scheduleAt(4, action: { self.viewModel.prefetchItemsAt(prefetch: true, indexPaths: [.init(row: 59, section: 0)]) })
 
         let newItems1 = (20 ... 39).map { IndexPath(row: $0, section: 0) }
         let newItems2 = (40 ... 59).map { IndexPath(row: $0, section: 0) }
@@ -48,9 +58,12 @@ final class HeroesListViewModelTests: XCTestCase {
     }
 
     func testAPIFailure() throws {
+        setShouldLoadRemotely(true)
         let schedular = TestScheduler(initialClock: 0)
         let errorObserver = schedular.createObserver(String.self)
-        let viewModel = HeroesViewModel()
+        let loader = HeroesLoader(remoteLoader: RemoteHeroesLoader(apiClient: HeroesMockedFailureApi()),
+                                  reachable: HasReachability())
+        let viewModel = HeroesViewModel(loader: loader)
         viewModel.error.bind(to: errorObserver).disposed(by: disposeBag)
 
         schedular.scheduleAt(1, action: { viewModel.loadData() })
@@ -60,32 +73,6 @@ final class HeroesListViewModelTests: XCTestCase {
 
     override func tearDown() {
         disposeBag = nil
+        viewModel = nil
     }
 }
-
-final class HeroesMockedSuccessApi: ApiClient {
-    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void) {
-        let hero = Hero(id: 1, name: "Hello", thumbnail: nil)
-        let data = DataClass(offset: 0, limit: 20, total: 60, count: 0, results: .init(repeating: hero, count: 20))
-        let response = HeroesResponse(data: data)
-
-        completion(.success(try! JSONEncoder().encode(response)))
-    }
-
-    func cancel() {
-        // todo
-    }
-}
-
-final class HeroesMockedFailureApi: ApiClient {
-    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void) {
-        let data = "{data:1}".data(using: .utf8)
-        completion(.success(try! JSONEncoder().encode(data)))
-    }
-
-    func cancel() {
-        // todo
-    }
-}
-
-

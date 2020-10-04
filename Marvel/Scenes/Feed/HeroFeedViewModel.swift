@@ -34,8 +34,8 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
 
     private(set) var reloadFields = PublishSubject<CollectionReload>()
 
-    init(apiClient: FeedDataSource = FeedLoader()) {
-        self.feedLoader = apiClient
+    init(loader: FeedDataSource = FeedLoader()) {
+        feedLoader = loader
         bindForHeroSelection()
     }
 
@@ -46,19 +46,18 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
-        feedLoader.loadHeroesFeed(id: characterId, offset: page.offset, compeletion:  { [weak self] data in
-                  guard let self = self else { return }
-                  switch data {
-                  case let .success(response):
-                      self.updateUI(with: response.feed)
-                      self.page.updateNewPage(total: response.totalPages,
-                                              fetched: self.dataList.count)
-                  case let .failure(error):
-                      self.error.onNext(error.localizedDescription)
-                  }
-                  self.isDataLoading.onNext(false)
-              })
-       
+        feedLoader.loadHeroesFeed(id: characterId, offset: page.offset, compeletion: { [weak self] data in
+            guard let self = self else { return }
+            switch data {
+            case let .success(response):
+                self.updateUI(with: response.feed)
+                self.page.updateNewPage(total: response.totalPages,
+                                        fetched: self.dataList.count)
+            case let .failure(error):
+                self.error.onNext(error.localizedDescription)
+            }
+            self.isDataLoading.onNext(false)
+        })
     }
 
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath]) {

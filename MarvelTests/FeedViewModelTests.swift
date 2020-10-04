@@ -12,18 +12,35 @@ import XCTest
 import RxCocoa
 import RxSwift
 import RxTest
-import XCTest
 
-final class HeroFeedViewModelTests: XCTestCase {
+final class FeedViewModelTests: XCTestCase {
     private var disposeBag: DisposeBag!
     override func setUp() {
         disposeBag = DisposeBag()
     }
 
+    private func buildViewModel() -> HeroFeedViewModel {
+        let remote = RemoteFeedLoader(apiClient: MockedFeedSuccessApi())
+        return HeroFeedViewModel(loader: FeedLoader(remoteLoader: remote, reachable: HasReachability()))
+    }
+
+    private func setShouldLoadRemotely(_ remote: Bool) {
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 1, offset: 0).key)
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 1, offset: 20).key)
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 1, offset: 40).key)
+
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 2, offset: 0).key)
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 3, offset: 0).key)
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 4, offset: 0).key)
+        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 5, offset: 0).key)
+        UserDefaults.standard.synchronize()
+    }
+
     func testLoadingHeroFeedInCaseMultipleSelectionQuickly() throws {
         let schedular = TestScheduler(initialClock: 0, resolution: 0.001)
         SharingScheduler.mock(scheduler: schedular) {
-            let viewModel = HeroFeedViewModel()
+            let viewModel = self.buildViewModel()
+            self.setShouldLoadRemotely(true)
             let reloadObserver = schedular.createObserver(CollectionReload.self)
             viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
             schedular.scheduleAt(100, action: { viewModel.selectHeroById.onNext(1) })
@@ -43,7 +60,8 @@ final class HeroFeedViewModelTests: XCTestCase {
         let schedular = TestScheduler(initialClock: 0, resolution: 0.001)
         SharingScheduler.mock(scheduler: schedular) {
             let reloadObserver = schedular.createObserver(CollectionReload.self)
-            let viewModel = HeroFeedViewModel()
+            let viewModel = self.buildViewModel()
+            self.setShouldLoadRemotely(true)
             viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
 
             schedular.scheduleAt(10, action: { viewModel.selectHeroById.onNext(1) })
@@ -64,7 +82,8 @@ final class HeroFeedViewModelTests: XCTestCase {
     func testPagesLoadingWithHeroChanging() throws {
         let schedular = TestScheduler(initialClock: 0, resolution: 0.001)
         SharingScheduler.mock(scheduler: schedular) {
-            let viewModel = HeroFeedViewModel()
+            let viewModel = self.buildViewModel()
+            self.setShouldLoadRemotely(true)
             let reloadObserver = schedular.createObserver(CollectionReload.self)
             viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
             schedular.scheduleAt(100, action: { viewModel.selectHeroById.onNext(1) })
@@ -77,26 +96,14 @@ final class HeroFeedViewModelTests: XCTestCase {
             XCTAssertEqual(viewModel.dataList.count, 20)
         }
     }
+
     func testCompostThumbnailFromString() throws {
-        let url  = "https://www.ggoogle.com/image/abu.png"
+        let url = "https://www.ggoogle.com/image/abu.png"
         XCTAssertEqual(Thumbnail.instance(from: url).photo, url)
     }
-    
+
     override func tearDown() {
         disposeBag = nil
-    }
-}
-
-final class FeedMockedSuccessApi: ApiClient {
-    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void) {
-        let feed = Feed(id: 1, title: nil, modified: nil,  thumbnail: nil)
-        let data = FeedDataClass(offset: 0, limit: 20, total: 60, count: 0, results: .init(repeating: feed, count: 20))
-        let response = FeedJsonResponse(data: data)
-        completion(.success(try! JSONEncoder().encode(response)))
-    }
-
-    func cancel() {
-        // todo
     }
 }
 

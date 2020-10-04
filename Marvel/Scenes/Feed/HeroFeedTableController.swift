@@ -64,8 +64,8 @@ final class HeroFeedTableController: UITableViewController {
             })
             .disposed(by: disposeBag)
         viewModel.error
-                   .asDriver(onErrorJustReturn: "")
-                   .drive(onNext: show(error:)).disposed(by: disposeBag)
+            .asDriver(onErrorJustReturn: "")
+            .drive(onNext: show(error:)).disposed(by: disposeBag)
     }
 }
 
@@ -89,8 +89,6 @@ extension HeroFeedTableController {
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 100
     }
-
-
 }
 
 // MARK: - UITableViewDataSourcePrefetching

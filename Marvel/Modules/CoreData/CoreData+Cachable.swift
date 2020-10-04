@@ -26,26 +26,23 @@ extension CoreDataHelper {
         return []
     }
 
-    func save<T: CoreDataCachable>(data: [T], entity: TableName, onComplete:Complation? = nil) {
-        persistentContainer.performBackgroundTask { context in
-            for obj in data {
-                let object = NSEntityDescription.insertNewObject(forEntityName: entity.rawValue, into: context)
-                object.setValuesForKeys(obj.keyValued)
-            }
+    func save<T: CoreDataCachable>(data: [T], entity: TableName, onComplete: Complation? = nil) {
+        for obj in data {
+            let object = NSEntityDescription.insertNewObject(forEntityName: entity.rawValue, into: backgroundContext)
+            object.setValuesForKeys(obj.keyValued)
+        }
 
-            do {
-                try context.save()
-
-                DispatchQueue.main.async {
-                    self.persistentContainer.viewContext.performAndWait {
-                        try? self.persistentContainer.viewContext.save()
-                        onComplete?(false)
-                    }
+        do {
+            try backgroundContext.save()
+            DispatchQueue.main.async {
+                self.persistentContainer.viewContext.performAndWait {
+                    try? self.persistentContainer.viewContext.save()
+                    onComplete?(false)
                 }
-            } catch {
-                print(error)
-                onComplete?(false)
             }
+        } catch {
+            print(error)
+            onComplete?(false)
         }
     }
 }

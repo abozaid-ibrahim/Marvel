@@ -12,6 +12,5 @@ final class MarvelUITests: XCTestCase {
     func testOpenDetailsView() throws {
         let app = XCUIApplication()
         app.launch()
-                              
     }
 }

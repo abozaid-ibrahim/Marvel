@@ -25,6 +25,7 @@ extension URLSessionDataTask: Disposable {
 
 public final class ImageDownloader: ImageDownloaderType {
     func downloadImageWith(url: URL, completion: DownloadImageCompletion? = nil) -> Disposable? {
+        //TODO: add date to image to 24 hours
         if let data = cached(url: url.absoluteString) {
             completion?(data)
             return nil

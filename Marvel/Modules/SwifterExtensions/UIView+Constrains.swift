@@ -17,15 +17,13 @@ extension UIView {
             leadingAnchor.constraint(equalTo: parent.leadingAnchor, constant: CGFloat(leading)),
             trailingAnchor.constraint(equalTo: parent.trailingAnchor, constant: -CGFloat(trailing)),
             topAnchor.constraint(equalTo: parent.topAnchor, constant: CGFloat(top)),
-            bottomAnchor.constraint(equalTo: parent.bottomAnchor, constant: -CGFloat(bottom)),
-        ])
+            bottomAnchor.constraint(equalTo: parent.bottomAnchor, constant: -CGFloat(bottom))])
     }
 
     func setConstrains(width: CGFloat, height: CGFloat) {
         translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             widthAnchor.constraint(equalToConstant: width),
-            heightAnchor.constraint(equalToConstant: height),
-        ])
+            heightAnchor.constraint(equalToConstant: height)])
     }
 }

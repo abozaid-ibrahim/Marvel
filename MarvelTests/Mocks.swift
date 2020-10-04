@@ -9,42 +9,47 @@
 import Foundation
 @testable import Marvel
 
-// MARK: Feed
+// MARK: API
 
-final class MockedRemoteFeedLoader: FeedDataSource {
-    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
-        let feed = Feed(pid: 1, id: 1, title: nil, modified: nil, thumbnail: nil)
-        let feeds: [Feed] = .init(repeating: feed, count: 20)
-        compeletion(.success((feeds, 20)))
+final class MockedHeroesSuccessApi: ApiClient {
+    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void) {
+        let hero = Hero(id: 1, name: "Hello", thumbnail: nil)
+        let data = DataClass(offset: 0, limit: 20, total: 60, count: 0, results: .init(repeating: hero, count: 20))
+        let response = HeroesResponse(data: data)
+
+        completion(.success(try! JSONEncoder().encode(response)))
+    }
+
+    func cancel() {
+        // todo
     }
 }
 
-final class MockedLocalFeedLoader: FeedDataSource {
-    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
-        let feed = Feed(pid: 1, id: 1, title: nil, modified: nil, thumbnail: nil)
-        let feeds: [Feed] = .init(repeating: feed, count: 20)
-        compeletion(.success((feeds, 20)))
+final class HeroesMockedFailureApi: ApiClient {
+    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void) {
+        let data = "{data:1}".data(using: .utf8)
+        completion(.success(try! JSONEncoder().encode(data)))
+    }
+
+    func cancel() {
+        // todo
     }
 }
 
+final class MockedFeedSuccessApi: ApiClient {
+    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void) {
+        let feed = Feed(id: 1, title: nil, modified: nil, thumbnail: nil)
+        let data = FeedDataClass(offset: 0, limit: 20, total: 60, count: 0, results: .init(repeating: feed, count: 20))
+        let response = FeedJsonResponse(data: data)
+        completion(.success(try! JSONEncoder().encode(response)))
+    }
 
-
-// MARK: Heroes
-
-class MockedRemoteHeroesLoader: HeroesDataSource {
-    func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, Error>) -> Void) {
-        let hero = Hero(id: 1, name: "test", thumbnail: nil)
-        let heros: [Hero] = .init(repeating: hero, count: 20)
-        compeletion(.success((heros, 20)))
+    func cancel() {
+        // todo
     }
 }
 
-class MockedLocalHeroesLoader: HeroesDataSource {
-    func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, Error>) -> Void) {
-    }
-}
-
-// MARK: D
+// MARK: APIInterval
 
 struct APIInterval {
     static let moreThanDay = Calendar.current.date(byAdding: .hour, value: -25, to: Date())!

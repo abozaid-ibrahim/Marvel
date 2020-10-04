@@ -14,23 +14,25 @@ protocol FeedDataSource {
     func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void)
 }
 
-final class FeedLoader: FeedDataSource, DataSource {
+class FeedLoader: FeedDataSource, DataSource {
     private let localLoader: FeedDataSource
     private let remoteLoader: FeedDataSource
-
+    private let reachable: Reachable
     init(localLoader: FeedDataSource = LocalFeedLoader(),
-         remoteLoader: FeedDataSource = RemoteFeedLoader()) {
+         remoteLoader: FeedDataSource = RemoteFeedLoader(),
+         reachable: Reachable = Reachability.shared) {
         self.localLoader = localLoader
         self.remoteLoader = remoteLoader
+        self.reachable = reachable
     }
 
     func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
-        let loadRemotely = shouldLoadRemotely(for: .feedApiLastUpdated(id: id))
+        let loadRemotely = shouldLoadRemotely(for: .feedApiLastUpdated(id: id, offset: offset), reachable: reachable)
         let loader = loadRemotely ? remoteLoader : localLoader
         loader.loadHeroesFeed(id: id, offset: offset) { result in
             if case let .success(data) = result, loadRemotely {
                 self.removeOldCachedData(for: .feed, where: .feed(pid: id))
-                self.cachData(id, data.feed)
+                self.cachData(for: offset, id, data.feed)
             }
             compeletion(result)
         }
@@ -38,8 +40,8 @@ final class FeedLoader: FeedDataSource, DataSource {
 }
 
 private extension FeedLoader {
-    func cachData(_ id: Int, _ data: [Feed]) {
-        UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.feedApiLastUpdated(id: id).key)
+    func cachData(for offset: Int, _ id: Int, _ data: [Feed]) {
+        UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.feedApiLastUpdated(id: id, offset: offset).key)
         UserDefaults.standard.synchronize()
         let dataWithParendId = data.map { Feed($0, pid: id) }
         CoreDataHelper.shared.save(data: dataWithParendId, entity: .feed)

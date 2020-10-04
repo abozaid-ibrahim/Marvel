@@ -20,6 +20,10 @@ final class CoreDataHelper {
     static let shared = CoreDataHelper()
     private init() {}
 
+    lazy var backgroundContext: NSManagedObjectContext = {
+        self.persistentContainer.newBackgroundContext()
+    }()
+
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: CoreDataHelper.shared.dataModelName)
         container.loadPersistentStores(completionHandler: { _, error in
@@ -33,17 +37,18 @@ final class CoreDataHelper {
     }()
 
     func printDBPath() {
-        log("DB Directory: ", FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last ?? "Not Found!", level: .info)
+        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last
+        log("DB Directory: ", path, level: .info)
     }
 
-    func save(context: NSManagedObjectContext) {
+    func saveContext() {
+        let context = persistentContainer.viewContext
         guard context.hasChanges else { return }
         do {
             try context.save()
         } catch {
-            print(error) // TODO: Replace this implementation with code to handle the error appropriately.
             #if DEBUG
-//                fatalError("Unresolved error \(error)")
+                fatalError("Unresolved error \(error)")
             #endif
         }
     }
@@ -54,8 +59,7 @@ final class CoreDataHelper {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
 
         do {
-            // TODO: do this job on the Background thread
-            try persistentContainer.viewContext.execute(batchDeleteRequest)
+            try backgroundContext.execute(batchDeleteRequest)
         } catch {
             log("Detele all data in \(entity) error :", error, level: .error)
         }
