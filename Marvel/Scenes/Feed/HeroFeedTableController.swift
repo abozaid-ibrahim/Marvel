@@ -14,7 +14,6 @@ final class HeroFeedTableController: UITableViewController {
     private let viewModel: HeroFeedViewModelType
     private var comicsList: [Feed] { viewModel.dataList }
     private let disposeBag = DisposeBag()
-    private var last = CGFloat(0)
 
     init(viewModel: HeroFeedViewModelType) {
         self.viewModel = viewModel
@@ -36,9 +35,10 @@ final class HeroFeedTableController: UITableViewController {
     }()
 
     private var header: UIView {
-        let view = UIView(frame: .init(x: 0, y: 0, width: tableView.bounds.width, height: 100))
+        let view = UIView()
         view.addSubview(heroes.view)
-        heroes.view.setConstrainsEqualToParentEdges()
+        heroes.view.setConstrainsEqualToParentEdges(top: 8, bottom: 8, leading: 8, trailing: 8)
+        view.backgroundColor = .white
         return view
     }
 

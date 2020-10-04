@@ -69,7 +69,6 @@ private extension HeroesController {
         switch reload {
         case .all:
             collectionView.reloadData()
-
         case let .insertItems(paths):
             collectionView.insertItems(at: paths)
         }
@@ -84,8 +83,7 @@ private extension HeroesController {
             layout.scrollDirection = .horizontal
         }
         collectionView.prefetchDataSource = self
-        self.collectionView.contentInset =  .init(top: 0, left: 10, bottom: 0, right: 0)
-
+        collectionView.contentInset = .init(top: 10, left: 10, bottom: 10, right: 10)
     }
 }
 
@@ -131,12 +129,12 @@ extension HeroesController {
     private func selectCell(at indexPath: IndexPath) {
         guard indexPath.row < heroesList.count else { return }
         if let prevSelectedCell = collectionView.cellForItem(at: IndexPath(row: viewModel.currentSelectedIndex, section: 0)) as? HeroCollectionCell {
-            prevSelectedCell.isSelected = false
+            prevSelectedCell.setSelected(false)
         }
         viewModel.selectHero(at: indexPath.row)
 
         guard let cell = collectionView.cellForItem(at: indexPath) as? HeroCollectionCell else { return }
-        cell.isSelected = true
+        cell.setSelected(true)
         collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
     }
 }

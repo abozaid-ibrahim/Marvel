@@ -90,6 +90,8 @@ private extension HeroFeedViewModel {
             .subscribe(onNext: { [unowned self] id in
                 self.characterId = id
                 self.page = Page()
+                self.dataList.removeAll()
+                self.reloadFields.onNext(.all)
                 self.loadData()
             }).disposed(by: disposeBag)
     }
