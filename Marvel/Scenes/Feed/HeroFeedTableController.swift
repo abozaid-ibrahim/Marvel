@@ -1,8 +1,8 @@
 //
 //  RecipesTableController.swift
-//  HelloFreshDevTest
+//  Marvel
 //
-//  Created by abuzeid on 31.07.20.
+//  Created by abuzeid on 23.09.20.
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 
@@ -26,10 +26,9 @@ final class HeroFeedTableController: UITableViewController {
         fatalError("Unsupported")
     }
 
-    // TODO: optimize data flow between feed, and heroes
     lazy var heroes: HeroesController = {
         let heroesViewModel = HeroesViewModel()
-        let controller = HeroesController(viewModel: heroesViewModel, height: 100)
+        let controller = HeroesController(viewModel: heroesViewModel)
         heroesViewModel.selectHero
             .bind(to: self.viewModel.selectHeroById)
             .disposed(by: self.disposeBag)
@@ -38,7 +37,6 @@ final class HeroFeedTableController: UITableViewController {
 
     private var header: UIView {
         let view = UIView(frame: .init(x: 0, y: 0, width: tableView.bounds.width, height: 100))
-//        self.addChild(heroes)
         view.addSubview(heroes.view)
         heroes.view.setConstrainsEqualToParentEdges()
         return view

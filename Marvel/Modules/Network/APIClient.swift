@@ -9,7 +9,6 @@ import Foundation
 
 protocol ApiClient {
     func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void)
-    func cancel()
 }
 
 final class HTTPClient: ApiClient {
@@ -36,7 +35,4 @@ final class HTTPClient: ApiClient {
         task.resume()
     }
 
-    func cancel() {
-        // TODO:
-    }
 }

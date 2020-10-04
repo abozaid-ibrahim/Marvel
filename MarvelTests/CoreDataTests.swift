@@ -11,14 +11,19 @@ import XCTest
 
 final class CoreDataTests: XCTestCase {
     func testSaveAndRetrieveImageFromDB() throws {
+        CoreDataHelper.shared.clearCache(for: .images)
         let url = "http://www.google.com/image.png"
         guard let imageData = UIImage(systemName: "folder")?.pngData() else {
             XCTFail("Falied to convert image to data")
             return
         }
 
-        CoreDataHelper.shared.saveImage(url: url, data: imageData)
-        XCTAssertEqual(CoreDataHelper.shared.getImage(url: url), imageData)
+        ImageDownloader().cachImage(url: url, image: imageData)
+        guard let imageRecord = ImageDownloader().cached(url: url) else {
+            XCTFail("Image not found in DB")
+            return
+        }
+        XCTAssertEqual(imageRecord, UIImage(systemName: "folder"))
     }
 
     func test_DB_CRUD_forHero() throws {
@@ -51,8 +56,8 @@ final class CoreDataTests: XCTestCase {
         let exp = expectation(description: "af")
         CoreDataHelper.shared.save(data: feed, entity: .feed, onComplete: { _ in
             XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed).count, 3)
-            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: .feed(pid:1)).count, 2)
-            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: .feed(pid:2)).count, 1)
+            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: .feed(pid: 1)).count, 2)
+            XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .feed, predicate: .feed(pid: 2)).count, 1)
             exp.fulfill()
         })
         wait(for: [exp], timeout: 0.1)

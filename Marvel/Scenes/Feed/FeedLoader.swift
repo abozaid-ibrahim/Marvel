@@ -14,7 +14,7 @@ protocol FeedDataSource {
     func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void)
 }
 
-class FeedLoader: FeedDataSource, DataSource {
+final class FeedLoader: FeedDataSource, DataSource {
     private let localLoader: FeedDataSource
     private let remoteLoader: FeedDataSource
     private let reachable: Reachable

@@ -21,7 +21,9 @@ final class CoreDataHelper {
     private init() {}
 
     lazy var backgroundContext: NSManagedObjectContext = {
-        self.persistentContainer.newBackgroundContext()
+        let contxt = self.persistentContainer.newBackgroundContext()
+        contxt.automaticallyMergesChangesFromParent = true
+        return contxt
     }()
 
     lazy var persistentContainer: NSPersistentContainer = {

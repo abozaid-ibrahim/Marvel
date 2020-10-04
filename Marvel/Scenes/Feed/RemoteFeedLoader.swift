@@ -8,7 +8,7 @@
 
 import Foundation
 
-class RemoteFeedLoader: FeedDataSource {
+final class RemoteFeedLoader: FeedDataSource {
     let apiClient: ApiClient
     init(apiClient: ApiClient = HTTPClient()) {
         self.apiClient = apiClient

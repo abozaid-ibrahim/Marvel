@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 
-class LocalFeedLoader: FeedDataSource {
+final class LocalFeedLoader: FeedDataSource {
     func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
         let feed = CoreDataHelper
             .shared

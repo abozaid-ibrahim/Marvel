@@ -1,8 +1,8 @@
 //
 //  ImageDownloader.swift
-//  HelloFreshDevTest
+//  Marvel
 //
-//  Created by abuzeid on 22.09.20.
+//  Created by abuzeid on 23.09.20.
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 
@@ -11,6 +11,8 @@ import UIKit
 typealias DownloadImageCompletion = (UIImage?) -> Void
 protocol ImageDownloaderType {
     func downloadImageWith(url: URL, completion: DownloadImageCompletion?) -> Disposable?
+    func cached(url: String) -> UIImage?
+    func cachImage(url: String, image: Data)
 }
 
 public protocol Disposable {
@@ -25,7 +27,6 @@ extension URLSessionDataTask: Disposable {
 
 public final class ImageDownloader: ImageDownloaderType {
     func downloadImageWith(url: URL, completion: DownloadImageCompletion? = nil) -> Disposable? {
-        //TODO: add date to image to 24 hours
         if let data = cached(url: url.absoluteString) {
             completion?(data)
             return nil
@@ -42,13 +43,25 @@ public final class ImageDownloader: ImageDownloaderType {
         dataTask.resume()
         return dataTask
     }
+}
 
-    private func cachImage(url: String, image: Data) {
-        CoreDataHelper.shared.saveImage(url: url, data: image)
+// MARK: Caching
+
+extension ImageDownloader {
+    func cachImage(url: String, image: Data) {
+        let obj = Image(image: image, url: url)
+        CoreDataHelper.shared.save(data: [obj], entity: .images)
     }
 
-    private func cached(url: String) -> UIImage? {
-        guard let data = CoreDataHelper.shared.getImage(url: url) else { return nil }
+    func cached(url: String) -> UIImage? {
+        guard let object = CoreDataHelper.shared.load(offset: 0, entity: .images, predicate: .image(of: url)).first,
+            let data = object.value(forKey: "image") as? Data,
+            let date = object.value(forKey: "date") as? Date,
+            let validDate = Calendar.current.date(byAdding: .day, value: 1, to: date) else { return nil }
+        if validDate < Date() {
+            CoreDataHelper.shared.clearCache(for: .images, where: .image(of: url))
+            return nil
+        }
         return UIImage(data: data)
     }
 }

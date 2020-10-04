@@ -12,12 +12,10 @@ import UIKit
 
 final class HeroesController: UICollectionViewController {
     private let viewModel: HeroesViewModelType
-    private let height: CGFloat
     let disposeBag = DisposeBag()
 
-    init(viewModel: HeroesViewModelType, height: CGFloat = 0) {
+    init(viewModel: HeroesViewModelType) {
         self.viewModel = viewModel
-        self.height = height
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
 
@@ -54,7 +52,7 @@ private extension HeroesController {
                 self?.selectCell(at: IndexPath(row: 0, section: 0))
             }).disposed(by: disposeBag)
         viewModel.isDataLoading
-            .compactMap { $0 ? CGFloat(self.height) : CGFloat(0) }
+            .compactMap { $0 ? CGFloat(self.collectionView.bounds.height) : CGFloat(0) }
             .asDriver(onErrorJustReturn: 0)
             .drive(onNext: collectionView.updateFooterHeight(height:))
             .disposed(by: disposeBag)
@@ -86,6 +84,8 @@ private extension HeroesController {
             layout.scrollDirection = .horizontal
         }
         collectionView.prefetchDataSource = self
+        self.collectionView.contentInset =  .init(top: 0, left: 10, bottom: 0, right: 0)
+
     }
 }
 
@@ -95,7 +95,7 @@ extension HeroesController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: height - 20, height: height)
+        return CGSize(width: collectionView.bounds.height - 20, height: collectionView.bounds.height)
     }
 }
 
@@ -137,7 +137,6 @@ extension HeroesController {
 
         guard let cell = collectionView.cellForItem(at: indexPath) as? HeroCollectionCell else { return }
         cell.isSelected = true
-        // TODO: add margin before item
         collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
     }
 }

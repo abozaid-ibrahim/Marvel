@@ -17,7 +17,7 @@ extension DataSource {
 //        return true
         guard let updateDate = UserDefaults.standard.object(forKey: key.key) as? Date,
             let callTimePlusDay = Calendar.current.date(byAdding: .hour, value: 24, to: updateDate) else {
-            return false
+            return true
         }
         return callTimePlusDay <= Date() && reachable.hasInternet()
     }

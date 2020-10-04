@@ -34,12 +34,12 @@ extension CoreDataHelper {
 
         do {
             try backgroundContext.save()
-            DispatchQueue.main.async {
-                self.persistentContainer.viewContext.performAndWait {
-                    try? self.persistentContainer.viewContext.save()
+//            DispatchQueue.main.async {
+//                self.persistentContainer.viewContext.performAndWait {
+//                    try? self.persistentContainer.viewContext.save()
                     onComplete?(false)
-                }
-            }
+//                }
+//            }
         } catch {
             print(error)
             onComplete?(false)

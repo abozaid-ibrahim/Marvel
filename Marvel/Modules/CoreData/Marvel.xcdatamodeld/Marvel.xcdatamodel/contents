@@ -13,12 +13,13 @@
         <attribute name="thumbnail" optional="YES" attributeType="String"/>
     </entity>
     <entity name="ImagesEntity" representedClassName="ImagesEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="image" optional="YES" attributeType="Binary"/>
         <attribute name="url" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="HeroEntity" positionX="-45" positionY="0" width="128" height="88"/>
         <element name="FeedEntity" positionX="-18" positionY="54" width="128" height="118"/>
-        <element name="ImagesEntity" positionX="9" positionY="99" width="128" height="73"/>
+        <element name="HeroEntity" positionX="-45" positionY="0" width="128" height="88"/>
+        <element name="ImagesEntity" positionX="9" positionY="99" width="128" height="88"/>
     </elements>
 </model>
