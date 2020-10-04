@@ -9,13 +9,13 @@
 import CoreData
 import Foundation
 
-final class CoreDataHelper {
-    enum TableName: String {
-        case heroes = "HeroEntity"
-        case feed = "FeedEntity"
-        case images = "ImagesEntity"
-    }
+enum TableName: String {
+    case heroes = "HeroEntity"
+    case feed = "FeedEntity"
+    case images = "ImagesEntity"
+}
 
+final class CoreDataHelper {
     let dataModelName = "Marvel"
     static let shared = CoreDataHelper()
     private init() {}
@@ -48,11 +48,13 @@ final class CoreDataHelper {
         }
     }
 
-    func clearCache(for entity: TableName) {
+    func clearCache(for entity: TableName, where predicate: NSPredicate? = nil) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity.rawValue)
+        fetchRequest.predicate = predicate
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
 
         do {
+            // TODO: do this job on the Background thread
             try persistentContainer.viewContext.execute(batchDeleteRequest)
         } catch {
             log("Detele all data in \(entity) error :", error, level: .error)

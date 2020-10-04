@@ -29,7 +29,7 @@ protocol HeroesViewModelType {
 }
 
 final class HeroesViewModel: HeroesViewModelType {
- var currentSelectedIndex: Int = -1
+    var currentSelectedIndex: Int = -1
     let selectHero = PublishSubject<Int>()
     private var page = Page()
 
@@ -51,7 +51,7 @@ final class HeroesViewModel: HeroesViewModelType {
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
-        heroesLoader.loadHeroes(offset: page.offset, compeletion: { [weak self] data in
+        heroesLoader.loadHeroes(offset: page.offset) { [weak self] data in
             guard let self = self else { return }
             switch data {
             case let .success(response):
@@ -62,7 +62,7 @@ final class HeroesViewModel: HeroesViewModelType {
                 self.error.onNext(error.localizedDescription)
             }
             self.isDataLoading.onNext(false)
-        })
+        }
     }
 
     func selectHero(at index: Int) {

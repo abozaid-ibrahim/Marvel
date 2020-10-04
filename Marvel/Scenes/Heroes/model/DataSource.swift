@@ -9,24 +9,16 @@
 import Foundation
 
 protocol DataSource {
-    func shouldLoadRemotely(for key: UserDefaultsKeys) -> Bool
+    func shouldLoadRemotely(for key: UserDefaultsKeys, reachable: Reachable) -> Bool
 }
 
 extension DataSource {
-    func shouldLoadRemotely(for key: UserDefaultsKeys) -> Bool {
-        return false
-        guard let updateDate = UserDefaults.standard.object(forKey: key.rawValue) as? Date,
+    func shouldLoadRemotely(for key: UserDefaultsKeys, reachable: Reachable = Reachability.shared) -> Bool {
+//        return true
+        guard let updateDate = UserDefaults.standard.object(forKey: key.key) as? Date,
             let callTimePlusDay = Calendar.current.date(byAdding: .hour, value: 24, to: updateDate) else {
             return false
         }
-        let remote = callTimePlusDay > Date() && Reachability.shared.hasInternet()
-
-        if remote {
-            DispatchQueue.global().async {
-                CoreDataHelper.shared.clearCache(for: .feed)
-                CoreDataHelper.shared.clearCache(for: .heroes)
-            }
-        }
-        return remote
+        return callTimePlusDay <= Date() && reachable.hasInternet()
     }
 }

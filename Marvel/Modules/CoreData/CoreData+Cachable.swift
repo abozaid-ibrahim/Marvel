@@ -8,7 +8,7 @@
 
 import CoreData
 import Foundation
-
+typealias Complation = ((Bool) -> Void)
 extension CoreDataHelper {
     func load(offset: Int, entity: TableName, predicate: NSPredicate? = nil) -> [NSManagedObject] {
         let managedContext = persistentContainer.viewContext
@@ -26,7 +26,7 @@ extension CoreDataHelper {
         return []
     }
 
-    func save<T: CoreDataCachable>(data: [T], entity: TableName, onComplete: ((Bool) -> Void)? = nil) {
+    func save<T: CoreDataCachable>(data: [T], entity: TableName, onComplete:Complation? = nil) {
         persistentContainer.performBackgroundTask { context in
             for obj in data {
                 let object = NSEntityDescription.insertNewObject(forEntityName: entity.rawValue, into: context)

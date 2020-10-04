@@ -16,13 +16,12 @@ final class RemoteHeroesLoader: HeroesDataSource {
 
     func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, Error>) -> Void) {
         let apiEndpoint = HeroesAPI.characters(offset: offset)
-        apiClient.getData(of: apiEndpoint) { [weak self] result in
+        apiClient.getData(of: apiEndpoint) { result in
             switch result {
             case let .success(data):
                 if let response: HeroesResponse = data.parse(),
                     let heroes = response.data?.results {
                     compeletion(.success((heroes, totalPages: response.data?.total ?? 0)))
-                    self?.cachData(heroes)
                 } else {
                     compeletion(.failure(.failedToParseData))
                 }
@@ -32,11 +31,5 @@ final class RemoteHeroesLoader: HeroesDataSource {
         }
     }
 
-    private func cachData(_ data: [Hero]) {
-        DispatchQueue.global().async {
-            UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.heroesApiLastUpdated.rawValue)
-            UserDefaults.standard.synchronize()
-            CoreDataHelper.shared.save(data: data, entity: .heroes)
-        }
-    }
+   
 }

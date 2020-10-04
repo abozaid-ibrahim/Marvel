@@ -12,7 +12,6 @@ import UIKit
 extension Destination {
     func getHeroFeedTableController() -> UIViewController {
         let viewModel = HeroFeedViewModel()
-        
         return HeroFeedTableController(viewModel: viewModel)
     }
 }

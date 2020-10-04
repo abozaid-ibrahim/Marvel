@@ -9,7 +9,11 @@
 import Foundation
 import Network
 
-final class Reachability {
+protocol Reachable {
+    func hasInternet() -> Bool
+}
+
+final class Reachability: Reachable {
     static let shared = Reachability()
     private init() {}
     let internetMonitor = NWPathMonitor()

@@ -11,6 +11,7 @@ target 'Marvel' do
   target 'MarvelTests' do
     inherit! :search_paths
       pod 'RxTest'
+      pod 'SwiftLint'
   end
 
   target 'MarvelUITests' do

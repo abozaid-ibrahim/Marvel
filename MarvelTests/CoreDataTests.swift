@@ -26,10 +26,8 @@ final class CoreDataTests: XCTestCase {
         XCTAssertEqual(CoreDataHelper.shared.load(offset: 0, entity: .heroes).count, 0)
 
         let heroes = [Hero(id: 1, name: "Abozaid", thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png")),
-                      Hero(id: 2, name: "Abozaid",
-                           thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png")),
-                      Hero(id: 3, name: "Abozaid",
-                           thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png"))]
+                      Hero(id: 2, name: "Abozaid", thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png")),
+                      Hero(id: 3, name: "Abozaid", thumbnail: .init(path: "https://www.google.com/imagename", thumbnailExtension: "png"))]
         let exp = expectation(description: "Tests")
 
         CoreDataHelper.shared.save(data: heroes, entity: .heroes, onComplete: { _ in

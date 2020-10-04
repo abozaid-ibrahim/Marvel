@@ -39,11 +39,14 @@ struct Thumbnail: Codable {
         case path
         case thumbnailExtension = "extension"
     }
+}
 
+extension Thumbnail {
     static func instance(from photo: String) -> Thumbnail? {
         let parts = photo.split(separator: ".").map { String($0) }.last
         var path = photo
-        path.removeLast((parts?.count ?? 0) + 1)
+        guard let dotIndex = parts?.count else { return nil }
+        path.removeLast(dotIndex + 1)
 
         return Thumbnail(path: path, thumbnailExtension: parts ?? "")
     }

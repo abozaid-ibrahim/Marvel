@@ -13,7 +13,7 @@ final class LocalFeedLoader: FeedDataSource {
     func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
         let feed = CoreDataHelper
             .shared
-            .load(offset: offset, entity: .feed, predicate: NSPredicate(format: "pid = %i", id))
+            .load(offset: offset, entity: .feed, predicate: .feed(pid: id))
             .compactMap { $0.toFeed }
         compeletion(.success((feed, feed.count)))
     }

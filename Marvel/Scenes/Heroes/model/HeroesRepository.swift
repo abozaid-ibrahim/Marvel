@@ -24,7 +24,26 @@ final class HeroesLoader: HeroesDataSource, DataSource {
     }
 
     func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, Error>) -> Void) {
-        let loader = shouldLoadRemotely(for: .heroesApiLastUpdated) ? remoteLoader : localLoader
-        loader.loadHeroes(offset: offset, compeletion: compeletion)
+        let loadRemotely = shouldLoadRemotely(for: .heroesApiLastUpdated)
+        let loader = loadRemotely ? remoteLoader : localLoader
+        loader.loadHeroes(offset: offset) { result in
+            if case let .success(data) = result, loadRemotely {
+                self.removeOldCachedData()
+                self.cachData(data.heroes)
+            }
+            compeletion(result)
+        }
+    }
+}
+
+extension HeroesLoader {
+    func cachData(_ data: [Hero], onComplete: Complation? = nil) {
+        UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.heroesApiLastUpdated.key)
+        UserDefaults.standard.synchronize()
+        CoreDataHelper.shared.save(data: data, entity: .heroes)
+    }
+
+    func removeOldCachedData() {
+        CoreDataHelper.shared.clearCache(for: .heroes)
     }
 }

@@ -30,9 +30,7 @@ extension CoreDataHelper {
 
         do {
             let images = try managedContext.fetch(fetchRequest)
-            let img = images.first?.value(forKey: "image")
-            let da = img as? Data
-            return da
+            return images.first?.value(forKey: "image") as? Data
         } catch let error as NSError {
             log("Could not fetch. \(error), \(error.userInfo)", level: .error)
         }

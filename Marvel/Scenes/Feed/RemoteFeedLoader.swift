@@ -16,13 +16,12 @@ final class RemoteFeedLoader: FeedDataSource {
 
     func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
         let apiEndpoint = HeroesAPI.comics(characterId: id, offset: offset)
-        apiClient.getData(of: apiEndpoint) { [weak self] result in
+        apiClient.getData(of: apiEndpoint) {  result in
             switch result {
             case let .success(data):
                 if let response: FeedJsonResponse = data.parse(),
                     let feed = response.data?.results {
                     compeletion(.success((feed, totalPages: response.data?.total ?? 0)))
-                    self?.cachData(id, feed)
                 } else {
                     compeletion(.failure(.failedToParseData))
                 }
@@ -32,12 +31,5 @@ final class RemoteFeedLoader: FeedDataSource {
         }
     }
 
-    private func cachData(_ id: Int, _ data: [Feed]) {
-        DispatchQueue.global().async {
-            UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.feedApiLastUpdated.rawValue)
-            UserDefaults.standard.synchronize()
-            let dataWithParendId =  data.map { Feed.init($0, pid: id) }
-            CoreDataHelper.shared.save(data: dataWithParendId, entity: .feed)
-        }
-    }
+   
 }

@@ -10,7 +10,6 @@ import CoreData
 import Foundation
 
 final class LocalHeroesLoader: HeroesDataSource {
-    
     func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, Error>) -> Void) {
         let heroes = CoreDataHelper
             .shared

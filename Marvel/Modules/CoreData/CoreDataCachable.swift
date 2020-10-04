@@ -11,7 +11,15 @@ protocol CoreDataCachable {
     var keyValued: [String: Any] { get }
 }
 
-enum UserDefaultsKeys: String {
-    case feedApiLastUpdated
+enum UserDefaultsKeys {
+    case feedApiLastUpdated(id:Int)
     case heroesApiLastUpdated
+    var key:String{
+        switch self {
+        case .heroesApiLastUpdated:
+            return "heroesApiLastUpdated"
+        case .feedApiLastUpdated(let id):
+            return "heroesApiLastUpdated_\(id)"
+        }
+    }
 }
