@@ -15,9 +15,9 @@ enum TableName: String {
     case images = "ImagesEntity"
 }
 
-final class CoreDataHelper {
+final class CoreDataIO {
     let dataModelName = "Marvel"
-    static let shared = CoreDataHelper()
+    static let shared = CoreDataIO()
     private init() {}
 
     lazy var backgroundContext: NSManagedObjectContext = {
@@ -27,7 +27,7 @@ final class CoreDataHelper {
     }()
 
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: CoreDataHelper.shared.dataModelName)
+        let container = NSPersistentContainer(name: CoreDataIO.shared.dataModelName)
         container.loadPersistentStores(completionHandler: { [weak self] _, error in
             self?.handle(error: error)
         })

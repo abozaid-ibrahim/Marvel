@@ -11,7 +11,7 @@ import Foundation
 
 final class HeroesLocalLoader: HeroesDataSource {
     func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, APIError>) -> Void) {
-        let heroes = CoreDataHelper
+        let heroes = CoreDataIO
             .shared
             .load(offset: offset, entity: .heroes)
             .compactMap { $0.toHero }

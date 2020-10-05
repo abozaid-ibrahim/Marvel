@@ -27,7 +27,7 @@ final class MockedSuccessAPIClient: ApiClient {
     }
 }
 
-final class MockedHeroesFailureApi: ApiClient {
+final class MockedFailureApi: ApiClient {
     func getData(of request: RequestBuilder, completion: @escaping (Result<Data, APIError>) -> Void) {
         let data = "{data:1}".data(using: .utf8)
         completion(.success(try! JSONEncoder().encode(data)))
@@ -51,25 +51,11 @@ struct ResponseFactory {
     let heroes = """
        {
                "data": {
-               "offset": 0,
                "limit": 3,
                "total": 60,
-               "results": [{
-               "id": 1011334,
-               "name": "3-D Man",
-               "modified": "2014-04-29T14:18:17-0400"
-               },
-               {
-               "id": 1011334,
-               "name": "3-D Man",
-               "modified": "2014-04-29T14:18:17-0400",
-               },
-               {
-               "id": 1011334,
-               "name": "3-D Man",
-               "modified": "2014-04-29T14:18:17-0400",
-               }
-               ]}}
+               "results": [{"id": 1},{"id": 2},{"id": 3}]
+                }
+        }
     """.data(using: .utf8)
 
     let feed: Data = {

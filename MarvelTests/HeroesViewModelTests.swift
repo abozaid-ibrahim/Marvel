@@ -47,7 +47,6 @@ final class HeroesViewModelTests: XCTestCase {
         schedular.scheduleAt(1, action: { self.viewModel.loadData() })
         schedular.scheduleAt(2, action: { prefetch(row: 2) })
         schedular.scheduleAt(3, action: { prefetch(row: 5) })
-        schedular.scheduleAt(4, action: { prefetch(row: 8) })
 
         let newItems1 = [3, 4, 5].map { IndexPath(row: $0, section: 0) }
         let newItems2 = [6, 7, 8].map { IndexPath(row: $0, section: 0) }
@@ -55,7 +54,6 @@ final class HeroesViewModelTests: XCTestCase {
         XCTAssertEqual(reloadObserver.events, [.next(1, .all),
                                                .next(2, .insertItems(newItems1)),
                                                .next(3, .insertItems(newItems2))])
-
         func prefetch(row: Int) {
             viewModel.prefetchItemsAt(prefetch: true, indexPaths: [.init(row: row, section: 0)])
         }
@@ -65,7 +63,7 @@ final class HeroesViewModelTests: XCTestCase {
         setShouldLoadRemotely(true)
         let schedular = TestScheduler(initialClock: 0)
         let errorObserver = schedular.createObserver(String.self)
-        let loader = HeroesLoader(remoteLoader: HeroesRemoteLoader(apiClient: MockedHeroesFailureApi()),
+        let loader = HeroesLoader(remoteLoader: HeroesRemoteLoader(apiClient: MockedFailureApi()),
                                   reachable: HasReachability())
         let viewModel = HeroesViewModel(loader: loader)
         viewModel.error.bind(to: errorObserver).disposed(by: disposeBag)

@@ -44,10 +44,10 @@ private extension FeedLoader {
         UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.feedApiLastUpdated(id: id, offset: offset).key)
         UserDefaults.standard.synchronize()
         let dataWithParendId = data.map { Feed($0, pid: id) }
-        CoreDataHelper.shared.save(data: dataWithParendId, entity: .feed)
+        CoreDataIO.shared.save(data: dataWithParendId, entity: .feed)
     }
 
     func removeOldCachedData(for entity: TableName, where predicate: NSPredicate) {
-        CoreDataHelper.shared.clearCache(for: entity, where: predicate)
+        CoreDataIO.shared.clearCache(for: entity, where: predicate)
     }
 }

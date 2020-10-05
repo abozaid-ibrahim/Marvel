@@ -38,7 +38,7 @@ public final class ImageDownloader: ImageDownloaderType {
                 return
             }
             let obj = Image(image: data, url: url.absoluteString)
-            CoreDataHelper.shared.save(data: [obj], entity: .images)
+            CoreDataIO.shared.save(data: [obj], entity: .images)
             completion?(image)
         }
         dataTask.resume()
@@ -50,12 +50,12 @@ public final class ImageDownloader: ImageDownloaderType {
 
 extension ImageDownloader {
     func cached(url: String) -> UIImage? {
-        guard let object = CoreDataHelper.shared.load(offset: 0, entity: .images, predicate: .image(of: url)).first,
+        guard let object = CoreDataIO.shared.load(offset: 0, entity: .images, predicate: .image(of: url)).first,
             let data = object.value(forKey: "image") as? Data,
             let date = object.value(forKey: "date") as? Date,
             let validDate = Calendar.current.date(byAdding: .day, value: 1, to: date) else { return nil }
         if validDate < Date() {
-            CoreDataHelper.shared.clearCache(for: .images, where: .image(of: url))
+            CoreDataIO.shared.clearCache(for: .images, where: .image(of: url))
             return nil
         }
         return UIImage(data: data)

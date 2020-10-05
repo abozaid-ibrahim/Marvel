@@ -43,10 +43,10 @@ extension HeroesLoader {
     func cachData(for offset:Int,_ data: [Hero], onComplete: Complation? = nil) {
         UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.heroesApiLastUpdated(offset: offset).key)
         UserDefaults.standard.synchronize()
-        CoreDataHelper.shared.save(data: data, entity: .heroes)
+        CoreDataIO.shared.save(data: data, entity: .heroes)
     }
 
     func removeOldCachedData() {
-        CoreDataHelper.shared.clearCache(for: .heroes)
+        CoreDataIO.shared.clearCache(for: .heroes)
     }
 }

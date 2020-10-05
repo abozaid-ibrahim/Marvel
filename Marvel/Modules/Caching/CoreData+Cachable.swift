@@ -10,7 +10,7 @@ import CoreData
 import Foundation
 
 typealias Complation = ((Bool) -> Void)
-extension CoreDataHelper {
+extension CoreDataIO {
     func load(offset: Int, entity: TableName, predicate: NSPredicate? = nil) -> [NSManagedObject] {
         let managedContext = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: entity.rawValue)

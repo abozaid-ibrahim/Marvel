@@ -23,7 +23,7 @@ final class DataLoaderTests: XCTestCase {
     }
 
     func testRecachDataWhenReCallThe_HeroesAPI() throws {
-        CoreDataHelper.shared.clearCache(for: .heroes)
+        CoreDataIO.shared.clearCache(for: .heroes)
         let feeder = HeroesLoader(remoteLoader: HeroesRemoteLoader(apiClient: MockedSuccessAPIClient()) )
         UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.heroesApiLastUpdated(offset: 0).key)
         UserDefaults.standard.synchronize()
@@ -54,7 +54,7 @@ final class DataLoaderTests: XCTestCase {
     }
 
     func testCachingAfterCallThe_FeedAPI() throws {
-        CoreDataHelper.shared.clearCache(for: .feed)
+        CoreDataIO.shared.clearCache(for: .feed)
         let feeder = FeedLoader(remoteLoader: FeedRemoteLoader(apiClient: MockedSuccessAPIClient() ))
         UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 1,offset: 0).key)
         UserDefaults.standard.synchronize()
