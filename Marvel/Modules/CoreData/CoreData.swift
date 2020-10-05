@@ -28,12 +28,8 @@ final class CoreDataHelper {
 
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: CoreDataHelper.shared.dataModelName)
-        container.loadPersistentStores(completionHandler: { _, error in
-            if let error = error as NSError? {
-                #if DEBUG
-                    fatalError("Unresolved error \(error), \(error.userInfo)")
-                #endif
-            }
+        container.loadPersistentStores(completionHandler: { [weak self] _, error in
+            self?.handle(error: error)
         })
         return container
     }()
@@ -43,15 +39,21 @@ final class CoreDataHelper {
         log("DB Directory: ", path, level: .info)
     }
 
+    private func handle(error: Error?) {
+        if let error = error as NSError? {
+            #if DEBUG
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            #endif
+        }
+    }
+
     func saveContext() {
         let context = persistentContainer.viewContext
         guard context.hasChanges else { return }
         do {
             try context.save()
         } catch {
-            #if DEBUG
-                fatalError("Unresolved error \(error)")
-            #endif
+            handle(error: error)
         }
     }
 

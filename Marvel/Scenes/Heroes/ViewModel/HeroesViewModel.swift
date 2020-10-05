@@ -73,7 +73,7 @@ final class HeroesViewModel: HeroesViewModelType {
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath]) {
         guard let max = indexPaths.map({ $0.row }).max() else { return }
         if page.fetchedItemsCount <= (max + 1) {
-            prefetch ? loadData() : ()
+            if prefetch { loadData() }
         }
     }
 }

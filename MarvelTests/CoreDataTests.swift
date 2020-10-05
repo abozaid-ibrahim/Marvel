@@ -10,21 +10,6 @@
 import XCTest
 
 final class CoreDataTests: XCTestCase {
-    func testSaveAndRetrieveImageFromDB() throws {
-        CoreDataHelper.shared.clearCache(for: .images)
-        let url = "http://www.google.com/image.png"
-        guard let imageData = UIImage(systemName: "folder")?.pngData() else {
-            XCTFail("Falied to convert image to data")
-            return
-        }
-
-        ImageDownloader().cachImage(url: url, image: imageData)
-        guard let imageRecord = ImageDownloader().cached(url: url) else {
-            XCTFail("Image not found in DB")
-            return
-        }
-        XCTAssertEqual(imageRecord, UIImage(systemName: "folder"))
-    }
 
     func test_DB_CRUD_forHero() throws {
         CoreDataHelper.shared.clearCache(for: .heroes)

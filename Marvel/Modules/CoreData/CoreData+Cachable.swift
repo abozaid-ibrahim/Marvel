@@ -31,15 +31,9 @@ extension CoreDataHelper {
             let object = NSEntityDescription.insertNewObject(forEntityName: entity.rawValue, into: backgroundContext)
             object.setValuesForKeys(obj.keyValued)
         }
-
         do {
             try backgroundContext.save()
-//            DispatchQueue.main.async {
-//                self.persistentContainer.viewContext.performAndWait {
-//                    try? self.persistentContainer.viewContext.save()
-                    onComplete?(false)
-//                }
-//            }
+            onComplete?(false)
         } catch {
             print(error)
             onComplete?(false)

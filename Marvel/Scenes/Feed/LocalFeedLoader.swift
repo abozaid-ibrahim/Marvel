@@ -10,7 +10,7 @@ import CoreData
 import Foundation
 
 final class LocalFeedLoader: FeedDataSource {
-    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
+    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, APIError>) -> Void) {
         let feed = CoreDataHelper
             .shared
             .load(offset: offset, entity: .feed, predicate: .feed(pid: id))

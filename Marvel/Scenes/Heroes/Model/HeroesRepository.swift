@@ -11,7 +11,7 @@ import Foundation
 typealias HeroResponse = (heroes: [Hero], totalPages: Int)
 
 protocol HeroesDataSource {
-    func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, Error>) -> Void)
+    func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, APIError>) -> Void)
 }
 
 final class HeroesLoader: HeroesDataSource, DataSource {
@@ -26,7 +26,7 @@ final class HeroesLoader: HeroesDataSource, DataSource {
         self.reachable = reachable
     }
 
-    func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, Error>) -> Void) {
+    func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, APIError>) -> Void) {
         let loadRemotely = shouldLoadRemotely(for: .heroesApiLastUpdated(offset: offset), reachable: reachable)
         let loader = loadRemotely ? remoteLoader : localLoader
         loader.loadHeroes(offset: offset) { result in

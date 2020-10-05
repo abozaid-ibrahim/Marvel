@@ -51,7 +51,8 @@ final class FeedViewModelTests: XCTestCase {
             schedular.scheduleAt(1200, action: { viewModel.selectHeroById.onNext(5) })
             schedular.start()
 
-            XCTAssertEqual(reloadObserver.events, [.next(700, .all), .next(1001, .all)])
+            XCTAssertEqual(reloadObserver.events, [.next(700, .all), .next(700, .all),
+                                                   .next(1001, .all), .next(1001, .all)])
             XCTAssertEqual(viewModel.dataList.count, 20)
         }
     }
@@ -72,7 +73,7 @@ final class FeedViewModelTests: XCTestCase {
             let newItems1 = (20 ... 39).map { IndexPath(row: $0, section: 0) }
             let newItems2 = (40 ... 59).map { IndexPath(row: $0, section: 0) }
             schedular.start()
-            XCTAssertEqual(reloadObserver.events, [.next(310, .all),
+            XCTAssertEqual(reloadObserver.events, [.next(310, .all), .next(310, .all),
                                                    .next(311, .insertItems(newItems1)),
                                                    .next(400, .insertItems(newItems2))])
             XCTAssertEqual(viewModel.dataList.count, 60)
@@ -92,7 +93,11 @@ final class FeedViewModelTests: XCTestCase {
             schedular.start()
             let newItems1 = (20 ... 39).map { IndexPath(row: $0, section: 0) }
 
-            XCTAssertEqual(reloadObserver.events, [.next(400, .all), .next(500, .insertItems(newItems1)), .next(900, .all)])
+            XCTAssertEqual(reloadObserver.events, [.next(400, .all),
+                                                   .next(400, .all),
+                                                   .next(500, .insertItems(newItems1)),
+                                                   .next(900, .all),
+                                                   .next(900, .all)])
             XCTAssertEqual(viewModel.dataList.count, 20)
         }
     }

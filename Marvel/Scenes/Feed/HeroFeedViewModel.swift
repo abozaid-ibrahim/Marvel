@@ -46,24 +46,23 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
         }
         page.isFetchingData = true
         isDataLoading.onNext(true)
-        feedLoader.loadHeroesFeed(id: characterId, offset: page.offset, compeletion: { [weak self] data in
+        feedLoader.loadHeroesFeed(id: characterId, offset: page.offset) { [weak self] data in
             guard let self = self else { return }
             switch data {
             case let .success(response):
                 self.updateUI(with: response.feed)
-                self.page.updateNewPage(total: response.totalPages,
-                                        fetched: self.dataList.count)
+                self.page.updateNewPage(total: response.totalPages, fetched: self.dataList.count)
             case let .failure(error):
                 self.error.onNext(error.localizedDescription)
             }
             self.isDataLoading.onNext(false)
-        })
+        }
     }
 
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath]) {
         guard let max = indexPaths.map({ $0.row }).max() else { return }
         if page.fetchedItemsCount <= (max + 1) {
-            prefetch ? loadData() : ()
+            if prefetch { loadData() }
         }
     }
 }
@@ -73,11 +72,11 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
 private extension HeroFeedViewModel {
     func updateUI(with sessions: [Feed]) {
         isDataLoading.onNext(false)
+        let startRange = dataList.count
         if page.isFirstPage {
             dataList = sessions
             reloadFields.onNext(.all)
-        } else {
-            let startRange = dataList.count
+        } else if (dataList.count + sessions.count) > startRange {
             dataList.append(contentsOf: sessions)
             let rows = (startRange ... dataList.count - 1).map { IndexPath(row: $0, section: 0) }
             reloadFields.onNext(.insertItems(rows))

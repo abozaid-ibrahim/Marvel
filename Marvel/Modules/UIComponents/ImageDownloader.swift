@@ -12,7 +12,6 @@ typealias DownloadImageCompletion = (UIImage?) -> Void
 protocol ImageDownloaderType {
     func downloadImageWith(url: URL, completion: DownloadImageCompletion?) -> Disposable?
     func cached(url: String) -> UIImage?
-    func cachImage(url: String, image: Data)
 }
 
 public protocol Disposable {
@@ -31,13 +30,15 @@ public final class ImageDownloader: ImageDownloaderType {
             completion?(data)
             return nil
         }
-        let dataTask = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+        guard Reachability.shared.hasInternet() else { return nil }
+        let dataTask = URLSession.shared.dataTask(with: url) { data, _, _ in
             guard let data = data,
                 let image = UIImage(data: data) else {
                 completion?(nil)
                 return
             }
-            self?.cachImage(url: url.absoluteString, image: data)
+            let obj = Image(image: data, url: url.absoluteString)
+            CoreDataHelper.shared.save(data: [obj], entity: .images)
             completion?(image)
         }
         dataTask.resume()
@@ -48,11 +49,6 @@ public final class ImageDownloader: ImageDownloaderType {
 // MARK: Caching
 
 extension ImageDownloader {
-    func cachImage(url: String, image: Data) {
-        let obj = Image(image: image, url: url)
-        CoreDataHelper.shared.save(data: [obj], entity: .images)
-    }
-
     func cached(url: String) -> UIImage? {
         guard let object = CoreDataHelper.shared.load(offset: 0, entity: .images, predicate: .image(of: url)).first,
             let data = object.value(forKey: "image") as? Data,

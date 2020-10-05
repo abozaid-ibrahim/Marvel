@@ -8,11 +8,11 @@
 import Foundation
 
 protocol ApiClient {
-    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void)
+    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, APIError>) -> Void)
 }
 
 final class HTTPClient: ApiClient {
-    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, Error>) -> Void) {
+    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, APIError>) -> Void) {
         let task = URLSession.shared.dataTask(with: request.request) { data, response, error in
             log(error, level: .error)
             if let error = error {

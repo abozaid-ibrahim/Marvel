@@ -14,7 +14,7 @@ import Foundation
         self.apiClient = apiClient
     }
 
-    func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, Error>) -> Void) {
+    func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, APIError>) -> Void) {
         let apiEndpoint = HeroesAPI.characters(offset: offset)
         apiClient.getData(of: apiEndpoint) { result in
             switch result {

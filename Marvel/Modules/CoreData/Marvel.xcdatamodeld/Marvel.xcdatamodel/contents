@@ -14,7 +14,7 @@
     </entity>
     <entity name="ImagesEntity" representedClassName="ImagesEntity" syncable="YES" codeGenerationType="class">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="image" optional="YES" attributeType="Binary"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="url" optional="YES" attributeType="String"/>
     </entity>
     <elements>

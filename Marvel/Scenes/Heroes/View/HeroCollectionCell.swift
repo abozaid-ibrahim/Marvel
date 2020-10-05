@@ -26,6 +26,6 @@ final class HeroCollectionCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        imageLoader?.dispose()
+//        imageLoader?.dispose()
     }
 }

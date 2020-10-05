@@ -14,7 +14,7 @@ final class RemoteFeedLoader: FeedDataSource {
         self.apiClient = apiClient
     }
 
-    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
+    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, APIError>) -> Void) {
         let apiEndpoint = HeroesAPI.comics(characterId: id, offset: offset)
         apiClient.getData(of: apiEndpoint) { result in
             switch result {

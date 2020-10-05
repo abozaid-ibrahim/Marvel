@@ -18,6 +18,11 @@ final class HeroFeedTableCell: UITableViewCell {
         selectionStyle = .none
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        comicImageView.image = nil
+    }
+
     func setData(of comic: Feed) {
         titleLabel.text = comic.title
         dateLabel.text = comic.modified

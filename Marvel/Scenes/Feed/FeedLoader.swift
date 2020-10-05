@@ -11,7 +11,7 @@ import Foundation
 typealias FeedResponse = (feed: [Feed], totalPages: Int)
 
 protocol FeedDataSource {
-    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void)
+    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, APIError>) -> Void)
 }
 
 final class FeedLoader: FeedDataSource, DataSource {
@@ -26,7 +26,7 @@ final class FeedLoader: FeedDataSource, DataSource {
         self.reachable = reachable
     }
 
-    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, Error>) -> Void) {
+    func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, APIError>) -> Void) {
         let loadRemotely = shouldLoadRemotely(for: .feedApiLastUpdated(id: id, offset: offset), reachable: reachable)
         let loader = loadRemotely ? remoteLoader : localLoader
         loader.loadHeroesFeed(id: id, offset: offset) { result in

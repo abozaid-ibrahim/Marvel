@@ -68,7 +68,7 @@ final class HeroesViewModelTests: XCTestCase {
 
         schedular.scheduleAt(1, action: { viewModel.loadData() })
         schedular.start()
-        XCTAssertEqual(errorObserver.events, [.next(1, Error.failedToParseData.localizedDescription)])
+        XCTAssertEqual(errorObserver.events, [.next(1, APIError.failedToParseData.localizedDescription)])
     }
 
     override func tearDown() {
