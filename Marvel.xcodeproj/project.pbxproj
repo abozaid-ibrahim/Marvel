@@ -30,6 +30,7 @@
 		6CC6D87C2522AC4600A18254 /* FeedRemoteLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC6D87B2522AC4600A18254 /* FeedRemoteLoader.swift */; };
 		6CC6D87E2522ADFE00A18254 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC6D87D2522ADFE00A18254 /* DataSource.swift */; };
 		6CC6D8812522B14000A18254 /* Navigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC6D8802522B14000A18254 /* Navigator.swift */; };
+		6CC7477E252BC1550066DCCB /* Requirements.md in Resources */ = {isa = PBXBuildFile; fileRef = 6CC7477D252BC1550066DCCB /* Requirements.md */; };
 		6CC7DC232521FDD500C8DEE9 /* HeroesLocalLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC7DC222521FDD500C8DEE9 /* HeroesLocalLoader.swift */; };
 		6CC7DC2525222A2600C8DEE9 /* CoreDataIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC7DC2425222A2600C8DEE9 /* CoreDataIO.swift */; };
 		6CC7DC2725222A4500C8DEE9 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC7DC2625222A4500C8DEE9 /* UserDefaultsKeys.swift */; };
@@ -108,6 +109,7 @@
 		6CC6D87B2522AC4600A18254 /* FeedRemoteLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRemoteLoader.swift; sourceTree = "<group>"; };
 		6CC6D87D2522ADFE00A18254 /* DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		6CC6D8802522B14000A18254 /* Navigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigator.swift; sourceTree = "<group>"; };
+		6CC7477D252BC1550066DCCB /* Requirements.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Requirements.md; sourceTree = "<group>"; };
 		6CC7DC222521FDD500C8DEE9 /* HeroesLocalLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroesLocalLoader.swift; sourceTree = "<group>"; };
 		6CC7DC2425222A2600C8DEE9 /* CoreDataIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataIO.swift; sourceTree = "<group>"; };
 		6CC7DC2625222A4500C8DEE9 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 		6CC83AC424E57FEA00DE4EDC = {
 			isa = PBXGroup;
 			children = (
+				6CC7477D252BC1550066DCCB /* Requirements.md */,
 				6CCD6EFD24E9855500B9AA61 /* README.md */,
 				6CC83ACF24E57FEA00DE4EDC /* Marvel */,
 				6CC83AE624E57FEB00DE4EDC /* MarvelTests */,
@@ -533,6 +536,7 @@
 			files = (
 				6CC83ADD24E57FEB00DE4EDC /* LaunchScreen.storyboard in Resources */,
 				6CC83B1C24E5E9FE00DE4EDC /* HeroCollectionCell.xib in Resources */,
+				6CC7477E252BC1550066DCCB /* Requirements.md in Resources */,
 				6C7C71F9251B89480013FEB7 /* FeedTableCell.xib in Resources */,
 				6CC83ADA24E57FEB00DE4EDC /* Preview Assets.xcassets in Resources */,
 				6CC83AD724E57FEB00DE4EDC /* Assets.xcassets in Resources */,
