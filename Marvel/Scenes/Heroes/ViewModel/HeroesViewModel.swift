@@ -9,37 +9,33 @@
 import Foundation
 import RxSwift
 
-enum CollectionReload: Equatable {
+enum DataChange: Equatable {
     case all
     case insertItems([IndexPath])
 }
 
 protocol HeroesViewModelType {
-    // output
     var dataList: [Hero] { get }
     var error: PublishSubject<String> { get }
     var isDataLoading: PublishSubject<Bool> { get }
-    var reloadFields: PublishSubject<CollectionReload> { get }
+    var reloadFields: PublishSubject<DataChange> { get }
     var selectHero: PublishSubject<Int> { get }
     func loadData()
-    // input
     var currentSelectedIndex: Int { get set }
     func selectHero(at index: Int)
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath])
 }
 
 final class HeroesViewModel: HeroesViewModelType {
-    var currentSelectedIndex: Int = -1
     let selectHero = PublishSubject<Int>()
-    private var page = Page()
-
     let error = PublishSubject<String>()
     let isDataLoading = PublishSubject<Bool>()
+    private var page = Page()
+    var currentSelectedIndex: Int = -1
     private let disposeBag = DisposeBag()
     private let heroesLoader: HeroesDataSource
     private(set) var dataList: [Hero] = []
-
-    private(set) var reloadFields = PublishSubject<CollectionReload>()
+    private(set) var reloadFields = PublishSubject<DataChange>()
 
     init(loader: HeroesDataSource = HeroesLoader()) {
         heroesLoader = loader

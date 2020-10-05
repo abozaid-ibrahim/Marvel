@@ -19,20 +19,23 @@ final class FeedViewModelTests: XCTestCase {
         disposeBag = DisposeBag()
     }
 
-    private func buildViewModel() -> HeroFeedViewModel {
-        let remote = RemoteFeedLoader(apiClient: MockedFeedSuccessApi())
-        return HeroFeedViewModel(loader: FeedLoader(remoteLoader: remote, reachable: HasReachability()))
+    private func buildViewModel() -> FeedViewModel {
+        let remote = FeedRemoteLoader(apiClient: MockedSuccessAPIClient())
+        return FeedViewModel(loader: FeedLoader(remoteLoader: remote, reachable: HasReachability()))
     }
 
     private func setShouldLoadRemotely(_ remote: Bool) {
-        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 1, offset: 0).key)
-        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 1, offset: 20).key)
-        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 1, offset: 40).key)
-
-        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 2, offset: 0).key)
-        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 3, offset: 0).key)
-        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 4, offset: 0).key)
-        UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 5, offset: 0).key)
+        func set(id: Int, offset: Int) {
+            let key = UserDefaultsKeys.feedApiLastUpdated(id: id, offset: offset).key
+            UserDefaults.standard.set(APIInterval.moreThanDay, forKey: key)
+        }
+        set(id: 1, offset: 0)
+        set(id: 1, offset: 20)
+        set(id: 1, offset: 40)
+        set(id: 2, offset: 0)
+        set(id: 3, offset: 0)
+        set(id: 4, offset: 0)
+        set(id: 5, offset: 0)
         UserDefaults.standard.synchronize()
     }
 
@@ -41,7 +44,7 @@ final class FeedViewModelTests: XCTestCase {
         SharingScheduler.mock(scheduler: schedular) {
             let viewModel = self.buildViewModel()
             self.setShouldLoadRemotely(true)
-            let reloadObserver = schedular.createObserver(CollectionReload.self)
+            let reloadObserver = schedular.createObserver(DataChange.self)
             viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
             schedular.scheduleAt(100, action: { viewModel.selectHeroById.onNext(1) })
             schedular.scheduleAt(200, action: { viewModel.selectHeroById.onNext(2) })
@@ -60,7 +63,7 @@ final class FeedViewModelTests: XCTestCase {
     func testLoadingMultiplePagesUntilReachTotal() throws {
         let schedular = TestScheduler(initialClock: 0, resolution: 0.001)
         SharingScheduler.mock(scheduler: schedular) {
-            let reloadObserver = schedular.createObserver(CollectionReload.self)
+            let reloadObserver = schedular.createObserver(DataChange.self)
             let viewModel = self.buildViewModel()
             self.setShouldLoadRemotely(true)
             viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
@@ -85,7 +88,7 @@ final class FeedViewModelTests: XCTestCase {
         SharingScheduler.mock(scheduler: schedular) {
             let viewModel = self.buildViewModel()
             self.setShouldLoadRemotely(true)
-            let reloadObserver = schedular.createObserver(CollectionReload.self)
+            let reloadObserver = schedular.createObserver(DataChange.self)
             viewModel.reloadFields.bind(to: reloadObserver).disposed(by: disposeBag)
             schedular.scheduleAt(100, action: { viewModel.selectHeroById.onNext(1) })
             schedular.scheduleAt(500, action: { viewModel.prefetchItemsAt(prefetch: true, indexPaths: [.init(row: 19, section: 0)]) })

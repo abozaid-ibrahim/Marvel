@@ -1,5 +1,5 @@
 //
-//  RemoteFeedLoader.swift
+//  FeedRemoteLoader.swift
 //  Marvel
 //
 //  Created by abuzeid on 29.09.20.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class RemoteFeedLoader: FeedDataSource {
+final class FeedRemoteLoader: FeedDataSource {
     let apiClient: ApiClient
     init(apiClient: ApiClient = HTTPClient()) {
         self.apiClient = apiClient
@@ -20,8 +20,8 @@ final class RemoteFeedLoader: FeedDataSource {
             switch result {
             case let .success(data):
                 if let response: FeedJsonResponse = data.parse(),
-                    let feed = response.data?.results {
-                    compeletion(.success((feed, totalPages: response.data?.total ?? 0)))
+                    let data = response.data {
+                    compeletion(.success((data.results ?? [], totalPages: data.total ?? 0)))
                 } else {
                     compeletion(.failure(.failedToParseData))
                 }

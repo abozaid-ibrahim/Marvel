@@ -24,7 +24,7 @@ final class DataLoaderTests: XCTestCase {
 
     func testRecachDataWhenReCallThe_HeroesAPI() throws {
         CoreDataHelper.shared.clearCache(for: .heroes)
-        let feeder = HeroesLoader(remoteLoader: RemoteHeroesLoader(apiClient: MockedFeedSuccessApi()) )
+        let feeder = HeroesLoader(remoteLoader: HeroesRemoteLoader(apiClient: MockedSuccessAPIClient()) )
         UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.heroesApiLastUpdated(offset: 0).key)
         UserDefaults.standard.synchronize()
         let loadDataRemotelyExp = expectation(description: "loadDataRemotelyExp")
@@ -32,7 +32,7 @@ final class DataLoaderTests: XCTestCase {
         feeder.loadHeroes(offset: 0) { [weak feeder] res in
             guard let feeder = feeder else { return }
             if case let .success(response) = res {
-                XCTAssertEqual(response.heroes.count, 20)
+                XCTAssertEqual(response.heroes.count, 3)
             } else {
                 XCTFail("Remote loader returns wrong data")
             }
@@ -45,7 +45,7 @@ final class DataLoaderTests: XCTestCase {
     private func loadDataFromCach(_ feeder: HeroesLoader, exp: XCTestExpectation) {
         feeder.loadHeroes(offset: 0) { res in
             if case let .success(response) = res {
-                XCTAssertEqual(response.heroes.count, 20)
+                XCTAssertEqual(response.heroes.count, 3)
             } else {
                 XCTFail("Remote loader returns wrong data")
             }
@@ -55,7 +55,7 @@ final class DataLoaderTests: XCTestCase {
 
     func testCachingAfterCallThe_FeedAPI() throws {
         CoreDataHelper.shared.clearCache(for: .feed)
-        let feeder = FeedLoader(remoteLoader: RemoteFeedLoader(apiClient: MockedFeedSuccessApi() ))
+        let feeder = FeedLoader(remoteLoader: FeedRemoteLoader(apiClient: MockedSuccessAPIClient() ))
         UserDefaults.standard.set(APIInterval.moreThanDay, forKey: UserDefaultsKeys.feedApiLastUpdated(id: 1,offset: 0).key)
         UserDefaults.standard.synchronize()
         let loadDataRemotelyExp = expectation(description: "loadDataRemotelyExp")

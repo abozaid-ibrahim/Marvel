@@ -29,9 +29,6 @@ final class HeroesController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        collectionView.allowsMultipleSelection = false
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = .white
         setupCollection()
         bindToViewModel()
     }
@@ -65,7 +62,7 @@ private extension HeroesController {
         viewModel.loadData()
     }
 
-    func collection(reload: CollectionReload) {
+    func collection(reload: DataChange) {
         switch reload {
         case .all:
             collectionView.reloadData()
@@ -75,6 +72,9 @@ private extension HeroesController {
     }
 
     func setupCollection() {
+        collectionView.allowsMultipleSelection = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = .white
         collectionView.register(HeroCollectionCell.self)
         collectionView.register(ActivityIndicatorFooterView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
@@ -154,7 +154,7 @@ extension HeroesController: UICollectionViewDataSourcePrefetching {
 extension UIViewController {
     func show(error: String) {
         let alert = UIAlertController(title: nil, message: error, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: Str.cancel, style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
 }

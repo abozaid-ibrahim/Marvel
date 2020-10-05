@@ -1,5 +1,5 @@
 //
-//  HeroFeedViewModel.swift
+//  FeedViewModel.swift
 //  Marvel
 //
 //  Created by abuzeid on 23.09.20.
@@ -10,17 +10,17 @@ import Foundation
 import RxCocoa
 import RxSwift
 
-protocol HeroFeedViewModelType {
+protocol FeedViewModelType {
     var dataList: [Feed] { get }
     var selectHeroById: PublishSubject<Int> { get }
     var error: PublishSubject<String> { get }
     var isDataLoading: PublishSubject<Bool> { get }
-    var reloadFields: PublishSubject<CollectionReload> { get }
+    var reloadFields: PublishSubject<DataChange> { get }
     func loadData()
     func prefetchItemsAt(prefetch: Bool, indexPaths: [IndexPath])
 }
 
-final class HeroFeedViewModel: HeroFeedViewModelType {
+final class FeedViewModel: FeedViewModelType {
     var dataList: [Feed] = []
     let debounceTimeInMilliSeconde = 300
     let selectHeroById = PublishSubject<Int>()
@@ -32,7 +32,7 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
     private let feedLoader: FeedDataSource
     private var page = Page()
 
-    private(set) var reloadFields = PublishSubject<CollectionReload>()
+    private(set) var reloadFields = PublishSubject<DataChange>()
 
     init(loader: FeedDataSource = FeedLoader()) {
         feedLoader = loader
@@ -69,7 +69,7 @@ final class HeroFeedViewModel: HeroFeedViewModelType {
 
 // MARK: private
 
-private extension HeroFeedViewModel {
+private extension FeedViewModel {
     func updateUI(with sessions: [Feed]) {
         isDataLoading.onNext(false)
         let startRange = dataList.count

@@ -6,8 +6,8 @@
 //  Copyright © 2020 abuzeid. All rights reserved.
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 struct Image: CoreDataCachable {
     let image: Data
@@ -23,5 +23,9 @@ struct Image: CoreDataCachable {
 extension NSPredicate {
     static func image(of url: String) -> NSPredicate {
         NSPredicate(format: "url = %@", url)
+    }
+
+    static func feed(pid: Int) -> NSPredicate {
+        return NSPredicate(format: "pid = %i", pid)
     }
 }

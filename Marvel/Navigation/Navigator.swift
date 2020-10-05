@@ -11,7 +11,7 @@ final class AppNavigator {
     static let shared = AppNavigator()
     private init() {}
     func set(window: UIWindow) {
-        let navigationController = UINavigationController(rootViewController: Destination.feedPage.controller)
+        let navigationController = UINavigationController(rootViewController: FeedTableController())
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }

@@ -14,6 +14,7 @@ protocol DataSource {
 
 extension DataSource {
     func shouldLoadRemotely(for key: UserDefaultsKeys, reachable: Reachable = Reachability.shared) -> Bool {
+//        return true
         guard let updateDate = UserDefaults.standard.object(forKey: key.key) as? Date,
             let callTimePlusDay = Calendar.current.date(byAdding: .hour, value: 24, to: updateDate) else {
             return true

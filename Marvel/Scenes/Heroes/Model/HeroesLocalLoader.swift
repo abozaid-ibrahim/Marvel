@@ -1,5 +1,5 @@
 //
-//  LocalHeroesLoader.swift
+//  HeroesLocalLoader.swift
 //  Marvel
 //
 //  Created by abuzeid on 28.09.20.
@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 
-final class LocalHeroesLoader: HeroesDataSource {
+final class HeroesLocalLoader: HeroesDataSource {
     func loadHeroes(offset: Int, compeletion: @escaping (Result<HeroResponse, APIError>) -> Void) {
         let heroes = CoreDataHelper
             .shared

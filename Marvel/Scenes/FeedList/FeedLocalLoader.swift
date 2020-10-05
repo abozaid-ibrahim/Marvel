@@ -1,5 +1,5 @@
 //
-//  LocalFeedLoader.swift
+//  FeedLocalLoader.swift
 //  Marvel
 //
 //  Created by abuzeid on 29.09.20.
@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 
-final class LocalFeedLoader: FeedDataSource {
+final class FeedLocalLoader: FeedDataSource {
     func loadHeroesFeed(id: Int, offset: Int, compeletion: @escaping (Result<FeedResponse, APIError>) -> Void) {
         let feed = CoreDataHelper
             .shared

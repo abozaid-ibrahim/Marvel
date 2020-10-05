@@ -1,5 +1,5 @@
 //
-//  RemoteHeroesLoader.swift
+//  HeroesRemoteLoader.swift
 //  Marvel
 //
 //  Created by abuzeid on 29.09.20.
@@ -8,7 +8,7 @@
 
 import Foundation
 
- class RemoteHeroesLoader: HeroesDataSource {
+ class HeroesRemoteLoader: HeroesDataSource {
     let apiClient: ApiClient
     init(apiClient: ApiClient = HTTPClient()) {
         self.apiClient = apiClient

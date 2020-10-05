@@ -1,6 +1,5 @@
 //
 //  UIView+Constrains.swift
-//  Marvel
 //
 //  Created by abuzeid on 22.09.20.
 //  Copyright © 2020 abuzeid. All rights reserved.
@@ -18,12 +17,5 @@ extension UIView {
             trailingAnchor.constraint(equalTo: parent.trailingAnchor, constant: -CGFloat(trailing)),
             topAnchor.constraint(equalTo: parent.topAnchor, constant: CGFloat(top)),
             bottomAnchor.constraint(equalTo: parent.bottomAnchor, constant: -CGFloat(bottom))])
-    }
-
-    func setConstrains(width: CGFloat, height: CGFloat) {
-        translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            widthAnchor.constraint(equalToConstant: width),
-            heightAnchor.constraint(equalToConstant: height)])
     }
 }

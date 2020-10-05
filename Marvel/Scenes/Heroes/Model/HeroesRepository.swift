@@ -18,8 +18,8 @@ final class HeroesLoader: HeroesDataSource, DataSource {
     let localLoader: HeroesDataSource
     let remoteLoader: HeroesDataSource
     let reachable: Reachable
-    init(localLoader: HeroesDataSource = LocalHeroesLoader(),
-         remoteLoader: HeroesDataSource = RemoteHeroesLoader(),
+    init(localLoader: HeroesDataSource = HeroesLocalLoader(),
+         remoteLoader: HeroesDataSource = HeroesRemoteLoader(),
          reachable: Reachable = Reachability.shared) {
         self.localLoader = localLoader
         self.remoteLoader = remoteLoader

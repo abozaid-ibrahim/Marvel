@@ -11,41 +11,26 @@ import Foundation
 
 // MARK: API
 
-final class MockedHeroesSuccessApi: ApiClient {
+final class MockedSuccessAPIClient: ApiClient {
     func getData(of request: RequestBuilder, completion: @escaping (Result<Data, APIError>) -> Void) {
-        let hero = Hero(id: 1, name: "Hello", thumbnail: nil)
-        let data = DataClass(offset: 0, limit: 20, total: 60, count: 0, results: .init(repeating: hero, count: 20))
-        let response = HeroesResponse(data: data)
+        let data: Data?
+        switch request {
+        case HeroesAPI.characters:
+            data = ResponseFactory().heroes
+        case HeroesAPI.comics:
+            data = ResponseFactory().feed
+        default:
+            data = nil
+        }
 
-        completion(.success(try! JSONEncoder().encode(response)))
-    }
-
-    func cancel() {
-        // todo
+        completion(.success(data!))
     }
 }
 
-final class HeroesMockedFailureApi: ApiClient {
+final class MockedHeroesFailureApi: ApiClient {
     func getData(of request: RequestBuilder, completion: @escaping (Result<Data, APIError>) -> Void) {
         let data = "{data:1}".data(using: .utf8)
         completion(.success(try! JSONEncoder().encode(data)))
-    }
-
-    func cancel() {
-        // todo
-    }
-}
-
-final class MockedFeedSuccessApi: ApiClient {
-    func getData(of request: RequestBuilder, completion: @escaping (Result<Data, APIError>) -> Void) {
-        let feed = Feed(id: 1, title: nil, modified: nil, thumbnail: nil)
-        let data = FeedDataClass(offset: 0, limit: 20, total: 60, count: 0, results: .init(repeating: feed, count: 20))
-        let response = FeedJsonResponse(data: data)
-        completion(.success(try! JSONEncoder().encode(response)))
-    }
-
-    func cancel() {
-        // todo
     }
 }
 
@@ -60,4 +45,37 @@ struct HasReachability: Reachable {
     func hasInternet() -> Bool {
         return true
     }
+}
+
+struct ResponseFactory {
+    let heroes = """
+       {
+               "data": {
+               "offset": 0,
+               "limit": 3,
+               "total": 60,
+               "results": [{
+               "id": 1011334,
+               "name": "3-D Man",
+               "modified": "2014-04-29T14:18:17-0400"
+               },
+               {
+               "id": 1011334,
+               "name": "3-D Man",
+               "modified": "2014-04-29T14:18:17-0400",
+               },
+               {
+               "id": 1011334,
+               "name": "3-D Man",
+               "modified": "2014-04-29T14:18:17-0400",
+               }
+               ]}}
+    """.data(using: .utf8)
+
+    let feed: Data = {
+        let feed = Feed(id: 1, title: nil, modified: nil, thumbnail: nil)
+        let data = FeedDataClass(offset: 0, limit: 20, total: 60, count: 0, results: .init(repeating: feed, count: 20))
+        let response = FeedJsonResponse(data: data)
+        return try! JSONEncoder().encode(response)
+    }()
 }

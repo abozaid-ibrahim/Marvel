@@ -12,10 +12,9 @@ final class HeroCollectionCell: UICollectionViewCell {
     @IBOutlet private var heroImageView: UIImageView!
     @IBOutlet private var selectionBorderView: UIView!
     @IBOutlet private var titleLabel: UILabel!
-    private var imageLoader: Disposable?
 
     func setData(with hero: Hero, isSelected: Bool) {
-        imageLoader = heroImageView.setImage(with: hero.thumbnail.photo)
+        heroImageView.setImage(with: hero.thumbnail.photo)
         titleLabel.text = hero.name
         setSelected(isSelected)
     }
@@ -26,6 +25,5 @@ final class HeroCollectionCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-//        imageLoader?.dispose()
     }
 }

@@ -18,8 +18,8 @@ final class FeedLoader: FeedDataSource, DataSource {
     private let localLoader: FeedDataSource
     private let remoteLoader: FeedDataSource
     private let reachable: Reachable
-    init(localLoader: FeedDataSource = LocalFeedLoader(),
-         remoteLoader: FeedDataSource = RemoteFeedLoader(),
+    init(localLoader: FeedDataSource = FeedLocalLoader(),
+         remoteLoader: FeedDataSource = FeedRemoteLoader(),
          reachable: Reachable = Reachability.shared) {
         self.localLoader = localLoader
         self.remoteLoader = remoteLoader
@@ -49,11 +49,5 @@ private extension FeedLoader {
 
     func removeOldCachedData(for entity: TableName, where predicate: NSPredicate) {
         CoreDataHelper.shared.clearCache(for: entity, where: predicate)
-    }
-}
-
-extension NSPredicate {
-    static func feed(pid: Int) -> NSPredicate {
-        return NSPredicate(format: "pid = %i", pid)
     }
 }

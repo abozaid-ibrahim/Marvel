@@ -1,5 +1,5 @@
 //
-//  HeroFeedTableCell.swift
+//  FeedTableCell.swift
 //  Marvel
 //
 //  Created by abuzeid on 23.09.20.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class HeroFeedTableCell: UITableViewCell {
+final class FeedTableCell: UITableViewCell {
     @IBOutlet private var titleLabel: UILabel!
     @IBOutlet private var comicImageView: UIImageView!
     @IBOutlet private var dateLabel: UILabel!

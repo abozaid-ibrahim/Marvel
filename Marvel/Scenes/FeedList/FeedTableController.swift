@@ -10,12 +10,12 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-final class HeroFeedTableController: UITableViewController {
-    private let viewModel: HeroFeedViewModelType
+final class FeedTableController: UITableViewController {
+    private let viewModel: FeedViewModelType
     private var comicsList: [Feed] { viewModel.dataList }
     private let disposeBag = DisposeBag()
 
-    init(viewModel: HeroFeedViewModelType) {
+    init(viewModel: FeedViewModelType = FeedViewModel()) {
         self.viewModel = viewModel
         super.init(style: .grouped)
     }
@@ -44,19 +44,27 @@ final class HeroFeedTableController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = Str.discover
+        title = "Marvel"
+        setupTableView()
+        bind()
+    }
+
+    private func setupTableView() {
         tableView.prefetchDataSource = self
-        tableView.register(HeroFeedTableCell.self)
+        tableView.register(FeedTableCell.self)
         tableView.rowHeight = 700
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.showsHorizontalScrollIndicator = false
         tableView.showsVerticalScrollIndicator = false
+    }
+
+    private func bind() {
         viewModel.reloadFields
             .asDriver(onErrorJustReturn: .all)
             .drive(onNext: { [weak self] row in
-                if case let CollectionReload.insertItems(indexes) = row {
+                if case let DataChange.insertItems(indexes) = row {
                     self?.tableView.reloadRows(at: indexes, with: .none)
-                } else if case CollectionReload.all = row {
+                } else if case DataChange.all = row {
                     self?.tableView.reloadData()
                 }
             })
@@ -69,13 +77,13 @@ final class HeroFeedTableController: UITableViewController {
 
 // MARK: - Table view data source
 
-extension HeroFeedTableController {
+extension FeedTableController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return comicsList.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: HeroFeedTableCell.identifier, for: indexPath) as! HeroFeedTableCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: FeedTableCell.identifier, for: indexPath) as! FeedTableCell
         cell.setData(of: comicsList[indexPath.row])
         return cell
     }
@@ -91,7 +99,7 @@ extension HeroFeedTableController {
 
 // MARK: - UITableViewDataSourcePrefetching
 
-extension HeroFeedTableController: UITableViewDataSourcePrefetching {
+extension FeedTableController: UITableViewDataSourcePrefetching {
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         viewModel.prefetchItemsAt(prefetch: true, indexPaths: indexPaths)
     }

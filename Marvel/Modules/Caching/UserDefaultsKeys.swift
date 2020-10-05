@@ -7,18 +7,15 @@
 //
 
 import Foundation
-protocol CoreDataCachable {
-    var keyValued: [String: Any] { get }
-}
 
 enum UserDefaultsKeys {
-    case feedApiLastUpdated(id: Int,offset:Int)
-    case heroesApiLastUpdated(offset:Int)
+    case feedApiLastUpdated(id: Int, offset: Int)
+    case heroesApiLastUpdated(offset: Int)
     var key: String {
         switch self {
-        case .heroesApiLastUpdated(let offset):
+        case let .heroesApiLastUpdated(offset):
             return "heroesApiLastUpdated\(offset)"
-        case let .feedApiLastUpdated(id,offset):
+        case let .feedApiLastUpdated(id, offset):
             return "heroesApiLastUpdated_\(id)_\(offset)"
         }
     }
